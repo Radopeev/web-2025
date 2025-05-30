@@ -1,31 +1,24 @@
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE projects (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    config_file TEXT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    config_file VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE files (
-    id SERIAL PRIMARY KEY,
-    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
-    file_path TEXT NOT NULL,
+CREATE TABLE project_files (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    file_path VARCHAR(255),
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE instruments (
-    id SERIAL PRIMARY KEY,
-    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
-    name VARCHAR(100),
-    type VARCHAR(100),
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    name VARCHAR(255),
+    type VARCHAR(255),
     description TEXT,
-    access_link TEXT
+    access_link VARCHAR(255)
 );
