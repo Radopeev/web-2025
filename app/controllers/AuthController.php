@@ -13,7 +13,8 @@ class AuthController {
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                header('Location: /home');
+                $_SESSION['logged_in'] = true;
+                header('Location: /landingPage');
                 exit;
             } else {
                 $error = "Invalid credentials.";
@@ -28,8 +29,9 @@ class AuthController {
             $username = $_POST['username'];
             $email = $_POST['email'];
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $role = $_POST['role'];
 
-            if (User::create($username, $email, $password)) {
+            if (User::create($username, $email, $password,$role)) {
                 header('Location: /login');
                 exit;
             } else {

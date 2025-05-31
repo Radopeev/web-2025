@@ -5,9 +5,8 @@ class UploadController {
     public function handleUpload() {
         global $conn;
         session_start();
-        $user_id = $_SESSION['user_id'] ?? 1; // Temporary fallback
+        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;
 
-        // Insert project
         $title = $_POST['title'];
         $description = $_POST['description'];
 
@@ -23,7 +22,6 @@ class UploadController {
         $project_id = $stmt->insert_id;
         $stmt->close();
 
-        // Save source files
         foreach ($_FILES['source_files']['tmp_name'] as $index => $tmpName) {
             if ($tmpName) {
                 $filename = basename($_FILES['source_files']['name'][$index]);
@@ -37,7 +35,6 @@ class UploadController {
             }
         }
 
-        // Save instruments
         $names = $_POST['instrument_name'];
         $types = $_POST['instrument_type'];
         $descriptions = $_POST['instrument_description'];
@@ -50,6 +47,6 @@ class UploadController {
             $stmt->close();
         }
 
-        header("Location: /profile"); // or home page
+        header("Location: /landingPage");
     }
 }
