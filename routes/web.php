@@ -19,10 +19,14 @@ switch ($request) {
         AuthController::logout();
         break;
     case '/landingPage':
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            header('Location: /login');
-            exit;
-        }
+        // A: We should allow access to the landing page for all users, including guests.
+        // ... I recommend forcing authentication only for details pages or upload page.
+
+        // if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        //     header('Location: /login');
+        //     exit;
+        // }
+
         LandingPageController::showLandingPage();
         break;
     case '/upload':
@@ -31,7 +35,6 @@ switch ($request) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload->handleUpload();
         } elseif ($_SERVER['REQUEST_URI'] === '/upload') {
-            // require 'views/upload.php';
             require_once APP_ROOT . 'app/views/upload.php';
         }
         break;
