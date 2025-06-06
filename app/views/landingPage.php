@@ -8,6 +8,9 @@ if (!isset($projects) || !is_array($projects)) {
 if (!isset($searchQuery)) {
     $searchQuery = '';
 }
+
+$projects = Project::getAllProjects(); // or Project::searchProjects($searchQuery)
+require_once 'app/views/landingPage.php';
 ?>
 
 <!DOCTYPE html>

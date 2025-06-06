@@ -31,7 +31,8 @@ switch ($request) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload->handleUpload();
         } elseif ($_SERVER['REQUEST_URI'] === '/upload') {
-            require 'views/upload.php';
+            // require 'views/upload.php';
+            require_once APP_ROOT . 'app/views/upload.php';
         }
         break;
     default:

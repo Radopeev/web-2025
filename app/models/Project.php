@@ -11,7 +11,7 @@ class Project {
         }
 
         try {
-            $result = $conn->query("SELECT id, user_id, title, description, config_file, created_at,status FROM projects ORDER BY created_at DESC");
+            $result = $conn->query("SELECT id, user_id, title, description, config_file, created_at FROM projects ORDER BY created_at DESC");
 
             if ($result) {
                 return $result->fetch_all(MYSQLI_ASSOC);
