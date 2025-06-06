@@ -31,7 +31,7 @@ class AuthController {
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             // $role = $_POST['role'];
 
-            if (User::create($username, $email, $password,$role)) {
+            if (User::create($username, $email, $password)) {
                 header('Location: /landingPage');
                 exit;
             } else {
