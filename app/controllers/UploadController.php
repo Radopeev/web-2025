@@ -12,7 +12,7 @@ class UploadController {
 
         $configPath = '';
         if (!empty($_FILES['config_file']['tmp_name'])) {
-            $configPath = 'public/uploads/configs/' . basename($_FILES['config_file']['name']);
+            $configPath = 'public/uploads/configs/' . uniqid() .basename($_FILES['config_file']['name']);
             move_uploaded_file($_FILES['config_file']['tmp_name'], $configPath);
         }
 
