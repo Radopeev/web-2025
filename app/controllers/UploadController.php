@@ -28,7 +28,7 @@ class UploadController {
                 $filePath = 'public/uploads/sources/' . $filename;
                 move_uploaded_file($tmpName, $filePath);
 
-                $stmt = $conn->prepare("INSERT INTO project_files (project_id, file_path) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO files (project_id, filename) VALUES (?, ?)");
                 $stmt->bind_param("is", $project_id, $filePath);
                 $stmt->execute();
                 $stmt->close();
