@@ -13,21 +13,8 @@ $projects = Project::getAllProjects(); // or Project::searchProjects($searchQuer
 require_once 'app/views/landingPage.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - All Projects</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
-        }
-    </style>
-</head>
-<body">
+<?php include __DIR__ . '/partials/header.php'; ?>
+
 <div>
     <header>
         <div">
@@ -97,8 +84,4 @@ require_once 'app/views/landingPage.php';
     </section>
 </div>
 
-<footer>
-    &copy; <?php echo date('Y'); ?> Your App Name. All rights reserved.
-</footer>
-</body>
-</html>
+<?php include __DIR__ . '/partials/footer.php'; ?>

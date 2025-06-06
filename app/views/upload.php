@@ -1,3 +1,5 @@
+<?php include __DIR__ . '/partials/header.php'; ?>
+
 <form action="/upload" method="POST" enctype="multipart/form-data">
     <h2>Upload New Project</h2>
 
@@ -37,3 +39,5 @@ function addInstrument() {
     container.insertAdjacentHTML('beforeend', instrumentHTML);
 }
 </script>
+
+<?php include __DIR__ . '/partials/footer.php'; ?>
