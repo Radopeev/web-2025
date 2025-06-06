@@ -8,20 +8,14 @@ if (!isset($projects) || !is_array($projects)) {
 if (!isset($searchQuery)) {
     $searchQuery = '';
 }
-
-$projects = Project::getAllProjects(); // or Project::searchProjects($searchQuery)
-require_once 'app/views/landingPage.php';
 ?>
 
 <?php include __DIR__ . '/partials/header.php'; ?>
 
 <div>
     <header>
-        <div">
+        <div>
             <h1>Welcome, <?php echo htmlspecialchars($username); ?>!</h1>
-            <a href="/logout">
-                Logout
-            </a>
         </div>
     </header>
 
