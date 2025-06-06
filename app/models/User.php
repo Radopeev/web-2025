@@ -12,12 +12,10 @@ class User {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public static function create($username, $email, $passwordHash) {
+    public static function create($username, $email, $passwordHash,$role) {
         global $conn;
-        
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $passwordHash);
-        
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password,role) VALUES (?, ?, ?,?)");
+        $stmt->bind_param("ssss", $username, $email, $passwordHash,$role);
         return $stmt->execute();
     }
 }
