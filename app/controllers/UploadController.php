@@ -24,27 +24,33 @@ class UploadController {
 
         foreach ($_FILES['source_files']['tmp_name'] as $index => $tmpName) {
             if ($tmpName) {
-                $filename = basename($_FILES['source_files']['name'][$index]);
-                $filePath = 'public/uploads/sources/' . $filename;
+                
+
+                $originalName = basename($_FILES['source_files']['name'][$index]);
+                $uniqueName = uniqid() . '_' . $originalName;
+                $filePath = 'public/uploads/sources/' . $uniqueName;
                 move_uploaded_file($tmpName, $filePath);
 
-                $stmt = $conn->prepare("INSERT INTO files (project_id, filename) VALUES (?, ?)");
-                $stmt->bind_param("is", $project_id, $filePath);
+                // Insert both the saved file path and the original file name
+                $stmt = $conn->prepare("INSERT INTO files (project_id, file_path, original_name) VALUES (?, ?, ?)");
+                $stmt->bind_param("iss", $project_id, $filePath, $originalName);
                 $stmt->execute();
                 $stmt->close();
             }
         }
 
-        $names = $_POST['instrument_name'];
-        $types = $_POST['instrument_type'];
-        $descriptions = $_POST['instrument_description'];
-        $access_links = $_POST['instrument_access'];
+        $names = isset($_POST['instrument_name']) ? $_POST['instrument_name'] : [];
+        $types = isset($_POST['instrument_type']) ? $_POST['instrument_type'] : [];
+        $descriptions = isset($_POST['instrument_description']) ? $_POST['instrument_description'] : [];
+        $access_links = isset($_POST['instrument_access']) ? $_POST['instrument_access'] : [];
 
         for ($i = 0; $i < count($names); $i++) {
-            $stmt = $conn->prepare("INSERT INTO instruments (project_id, name, type, description, access_link) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("issss", $project_id, $names[$i], $types[$i], $descriptions[$i], $access_links[$i]);
-            $stmt->execute();
-            $stmt->close();
+            if (trim($names[$i]) !== '') {
+                $stmt = $conn->prepare("INSERT INTO instruments (project_id, name, type, description, access_link) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("issss", $project_id, $names[$i], $types[$i], $descriptions[$i], $access_links[$i]);
+                $stmt->execute();
+                $stmt->close();
+            }
         }
 
         header("Location: /landingPage");
