@@ -4,6 +4,7 @@ const APP_ROOT = __DIR__ . '/../';
 require_once APP_ROOT . 'app/controllers/AuthController.php';
 require_once APP_ROOT . 'app/controllers/LandingPageController.php';
 require_once APP_ROOT . 'app/controllers/UploadController.php';
+require_once APP_ROOT . 'app/controllers/ProfileController.php';
 
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -42,6 +43,18 @@ switch ($request) {
         } elseif ($_SERVER['REQUEST_URI'] === '/upload') {
             require_once APP_ROOT . 'app/views/upload.php';
         }
+        break;
+    case '/profile':
+        ProfileController::showProfile();
+        break;
+    case '/update_profile':
+        ProfileController::updateProfile();
+        break;
+    case '/delete_project':
+        ProfileController::deleteProject();
+        break;
+    case '/upload_profile_picture':
+        ProfileController::uploadProfilePicture();
         break;
     default:
         http_response_code(404);

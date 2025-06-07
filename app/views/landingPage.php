@@ -51,8 +51,8 @@ if (!isset($searchQuery)) {
                 <?php foreach ($projects as $project): ?>
                     <div>
                         <div>
-                            <h3><?php echo htmlspecialchars($project['title']); ?></h3>
-                            <p><?php echo htmlspecialchars($project['description']); ?></p>
+                            <h3><?php echo preg_replace('/(' . preg_quote($searchQuery, '/') . ')/i', '<mark>$1</mark>', htmlspecialchars($project['title'])); ?></h3>
+                            <p><?php echo preg_replace('/(' . preg_quote($searchQuery, '/') . ')/i', '<mark>$1</mark>', htmlspecialchars($project['description'])); ?></p>
                         </div>
                         <div>
                                 <span class="text-xs font-medium px-2.5 py-0.5 rounded-full

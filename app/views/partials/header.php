@@ -19,6 +19,7 @@ if (!isset($username)) {
             <a href="/landingPage">Home</a>
             <?php if (!empty($username) && $username !== 'Guest'): ?>
                 <a href="/upload">Upload Project</a>
+                <a href="/profile">My Profile</a>
                 <a href="/logout" style="float:right; margin-left:20px;">Logout</a>
             <?php else: ?>
                 <a href="/login">Login</a>
@@ -27,3 +28,13 @@ if (!isset($username)) {
         </nav>
         <hr>
     </header>
+
+    <?php if (!empty($_SESSION['user_id'])): ?>
+        <?php
+        $user = User::findById($_SESSION['user_id']);
+        if (!empty($user['profile_picture'])): ?>
+            <div style="float: right; margin-right: 20px;">
+                <img src="/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Профилна снимка" style="width: 100px; height: 100px; border-radius: 50%;">
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>

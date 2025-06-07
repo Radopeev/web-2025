@@ -271,4 +271,75 @@ class Project {
             }
         }
     }
+
+    public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array {
+        global $conn;
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getProjectsByUserIdPaginated.");
+            return [];
+        }
+
+        try {
+            $sql = "SELECT id, title, description FROM projects WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Error preparing statement in getProjectsByUserIdPaginated: " . $conn->error);
+                return [];
+            }
+
+            $stmt->bind_param('iii', $userId, $limit, $offset);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result) {
+                return $result->fetch_all(MYSQLI_ASSOC);
+            } else {
+                error_log("Error getting result in getProjectsByUserIdPaginated: " . $stmt->error);
+                return [];
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching paginated projects: " . $e->getMessage());
+            return [];
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
+
+    public static function countProjectsByUserId(int $userId): int {
+        global $conn;
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::countProjectsByUserId.");
+            return 0;
+        }
+
+        try {
+            $sql = "SELECT COUNT(*) as total FROM projects WHERE user_id = ?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Error preparing statement in countProjectsByUserId: " . $conn->error);
+                return 0;
+            }
+
+            $stmt->bind_param('i', $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result) {
+                $row = $result->fetch_assoc();
+                return (int) $row['total'];
+            } else {
+                error_log("Error getting result in countProjectsByUserId: " . $stmt->error);
+                return 0;
+            }
+        } catch (Exception $e) {
+            error_log("Error counting projects: " . $e->getMessage());
+            return 0;
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
 }

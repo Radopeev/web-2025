@@ -7,11 +7,11 @@
     <textarea name="description" placeholder="Project Description"></textarea><br>
 
     <label>Source Files:</label>
-    <div id="file-inputs-container">
-        <input type="file" name="source_files[]" multiple>
-    </div>
-    <button type="button" onclick="addFileInput()">Add Another File</button>
+    <input type="file" id="source_files" name="source_files[]" multiple><br>
     <ul id="selected-files-list"></ul>
+
+    <label>Or Select a Directory:</label>
+    <input type="file" id="directory_files" name="directory_files[]" webkitdirectory multiple><br>
 
     <label>Configuration File:</label>
     <input type="file" name="config_file"><br>
@@ -38,33 +38,16 @@ function addInstrument() {
     container.insertAdjacentHTML('beforeend', instrumentHTML);
 }
 
-function addFileInput() {
-    const container = document.getElementById('file-inputs-container');
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.name = 'source_files[]';
-    input.multiple = true;
-    input.onchange = updateFileList;
-    container.appendChild(input);
-}
-
-function updateFileList() {
-    const inputs = document.querySelectorAll('input[type="file"][name="source_files[]"]');
+document.getElementById('source_files').addEventListener('change', function(event) {
+    const files = event.target.files;
     const list = document.getElementById('selected-files-list');
     list.innerHTML = '';
-    inputs.forEach(input => {
-        if (input.files.length > 0) {
-            for (const file of input.files) {
-                const li = document.createElement('li');
-                li.textContent = file.name;
-                list.appendChild(li);
-            }
-        }
-    });
-}
-
-// Attach updateFileList to the initial input
-document.querySelector('input[type="file"][name="source_files[]"]').onchange = updateFileList;
+    for (const file of files) {
+        const li = document.createElement('li');
+        li.textContent = file.name;
+        list.appendChild(li);
+    }
+});
 </script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
