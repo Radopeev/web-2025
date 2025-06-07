@@ -24,7 +24,7 @@
 
 ### via Docker
 
-1. Have Docker installed (and Docker Desktop)
+1. Have Docker installed (and have Docker Desktop open)
 
 2. run `docker-compose up --build` in the project root directory
 
