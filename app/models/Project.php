@@ -271,4 +271,86 @@ class Project {
             }
         }
     }
+
+    /**
+     * Retrieves files associated with a specific project.
+     *
+     * @param int $projectId The ID of the project.
+     * @return array An array of files associated with the project.
+     */
+    public static function getFilesByProjectId(int $projectId): array {
+        global $conn;
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getFilesByProjectId.");
+            return [];
+        }
+
+        try {
+            $sql = "SELECT id, file_path, original_name, uploaded_at FROM files WHERE project_id = ?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Error preparing statement in getFilesByProjectId: " . $conn->error);
+                return [];
+            }
+
+            $stmt->bind_param('i', $projectId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result) {
+                return $result->fetch_all(MYSQLI_ASSOC);
+            } else {
+                error_log("Error getting result in getFilesByProjectId: " . $stmt->error);
+                return [];
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching files by project ID: " . $e->getMessage());
+            return [];
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
+
+    /**
+     * Retrieves instruments associated with a specific project.
+     *
+     * @param int $projectId The ID of the project.
+     * @return array An array of instruments associated with the project.
+     */
+    public static function getInstrumentsByProjectId(int $projectId): array {
+        global $conn;
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getInstrumentsByProjectId.");
+            return [];
+        }
+
+        try {
+            $sql = "SELECT id, name, type, description, access_link FROM instruments WHERE project_id = ?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Error preparing statement in getInstrumentsByProjectId: " . $conn->error);
+                return [];
+            }
+
+            $stmt->bind_param('i', $projectId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result) {
+                return $result->fetch_all(MYSQLI_ASSOC);
+            } else {
+                error_log("Error getting result in getInstrumentsByProjectId: " . $stmt->error);
+                return [];
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching instruments by project ID: " . $e->getMessage());
+            return [];
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
 }

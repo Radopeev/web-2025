@@ -5,6 +5,11 @@ session_start();
 
 class AuthController {
     public static function login() {
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            header('Location: /landingPage');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $password = $_POST['password'];

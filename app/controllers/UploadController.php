@@ -10,6 +10,23 @@ class UploadController {
         $title = $_POST['title'];
         $description = $_POST['description'];
 
+        // Ensure directories exist
+        $projectDir = 'public/uploads/';
+        $configsDir = $projectDir . '/configs';
+        $sourcesDir = $projectDir . '/sources';
+
+        if (!is_dir($projectDir)) {
+            mkdir($projectDir, 0777, true);
+        }
+
+        if (!is_dir($configsDir)) {
+            mkdir($configsDir, 0777, true);
+        }
+
+        if (!is_dir($sourcesDir)) {
+            mkdir($sourcesDir, 0777, true);
+        }
+
         $configPath = '';
         if (!empty($_FILES['config_file']['tmp_name'])) {
             $configPath = 'public/uploads/configs/' . uniqid() .basename($_FILES['config_file']['name']);
@@ -36,6 +53,37 @@ class UploadController {
                 $stmt->bind_param("iss", $project_id, $filePath, $originalName);
                 $stmt->execute();
                 $stmt->close();
+            }
+        }
+
+        // Process directory files and preserve directory structure
+        if (!empty($_FILES['directory_files']['tmp_name'])) {
+            foreach ($_FILES['directory_files']['tmp_name'] as $index => $tmpName) {
+                if ($tmpName) {
+                    $originalName = $_FILES['directory_files']['name'][$index];
+                    $relativePath = dirname($originalName); // Get the relative directory path
+                    if ($relativePath === '.' || $relativePath === '') {
+                        $relativePath = ''; // Use empty string for root-level files
+                    }
+                    $targetDir = $sourcesDir . ($relativePath ? '/' . $relativePath : '');
+
+                    // Create the directory structure if it doesn't exist
+                    if (!is_dir($targetDir)) {
+                        mkdir($targetDir, 0777, true);
+                    }
+
+                    $filePath = $targetDir . '/' . basename($originalName);
+                    if (move_uploaded_file($tmpName, $filePath)) {
+                        // Insert file details into the database with relative path
+                        $relativeFilePath = ($relativePath ? $relativePath . '/' : '') . basename($originalName);
+                        $stmt = $conn->prepare("INSERT INTO files (project_id, file_path, original_name) VALUES (?, ?, ?)");
+                        $stmt->bind_param("iss", $project_id, $relativeFilePath, $originalName);
+                        $stmt->execute();
+                        $stmt->close();
+                    } else {
+                        error_log("Failed to move file: $tmpName to $filePath");
+                    }
+                }
             }
         }
 

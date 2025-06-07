@@ -19,6 +19,7 @@ if (!isset($username)) {
             <a href="/landingPage">Home</a>
             <?php if (!empty($username) && $username !== 'Guest'): ?>
                 <a href="/upload">Upload Project</a>
+                <a href="/profile">My Profile</a>
                 <a href="/logout" style="float:right; margin-left:20px;">Logout</a>
             <?php else: ?>
                 <a href="/login">Login</a>
