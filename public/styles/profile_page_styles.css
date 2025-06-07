@@ -1,203 +1,203 @@
-/* ...existing styles... */
-
-.profile-main {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 2rem 1.5rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(79,70,229,0.07);
-}
-
-.profile-section {
-    margin-bottom: 2rem;
-}
-
-.profile-info p {
-    margin: 0.3rem 0;
-    font-size: 1.05rem;
-}
-
-.edit-profile-btn {
-    background: #6366f1;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1.2rem;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background 0.2s;
-}
-
-.edit-profile-btn:hover {
-    background: #3730a3;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.3);
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    min-width: 320px;
-    max-width: 90vw;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.modal-content label {
-    font-weight: 500;
-    color: #4f46e5;
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="email"],
-.modal-content input[type="password"] {
-    padding: 0.5rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 1rem;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-}
-
-.save-btn {
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1.2rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.save-btn:hover {
-    background: #3730a3;
-}
-.cancel-btn {
-    background: #e5e7eb;
-    color: #22223b;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1.2rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.cancel-btn:hover {
-    background: #cbd5e1;
-}
-
-.projects-section {
-    margin-bottom: 2rem;
-}
-
-.projects-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.project-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    padding: 0.8rem 1rem;
-}
-
-.project-title {
-    font-weight: 600;
-    color: #4f46e5;
-    margin-right: 1rem;
-}
-
-.project-desc {
-    color: #334155;
-    margin-left: 0.5rem;
-}
-
-.delete-form {
-    display: inline;
-}
-
-.delete-btn {
-    background-color: #ef4444;
-    color: #fff;
-    border: none;
-    padding: 0.4rem 0.9rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-.delete-btn:hover {
-    background-color: #b91c1c;
-}
-
-.pagination {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 1rem;
-}
-
-.pagination-btn {
-    background: #6366f1;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.4rem 1rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background 0.2s;
-}
-.pagination-btn:hover {
-    background: #3730a3;
-}
-
-.profile-picture-section {
-    margin-top: 2rem;
-    text-align: center;
-}
-
-.profile-picture-form label {
-    font-weight: 500;
-    color: #4f46e5;
-}
-
-.profile-picture-form input[type="file"] {
-    margin: 0.5rem 0;
-}
-
-.upload-btn {
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1.2rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.upload-btn:hover {
-    background: #3730a3;
-}
+/* ...existing styles... */  
+  
+.profile-main {  
+    max-width: 700px;  
+    margin: 2rem auto;   
+    padding: 2rem 1.5rem;   
+    background: #fff;   
+    border-radius: 12px;   
+    box-shadow: 0 2px 12px rgba(79,70,229,0.07);  
+}  
+  
+.profile-section {  
+    margin-bottom: 2rem;  
+}  
+ 
+.profile-info p {  
+    margin: 0.3rem 0;  
+    font-size: 1.05rem;  
+}  
+  
+.edit-profile-btn {  
+    background: #6366f1;  
+    color: #fff; 
+    border: none; 
+    border-radius: 6px; 
+    padding: 0.5rem 1.2rem; 
+    font-weight: 500; 
+    cursor: pointer;  
+    margin-top: 1rem;  
+    transition: background 0.2s;  
+}  
+  
+.edit-profile-btn:hover {  
+    background: #3730a3; 
+} 
+ 
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 1000;  
+    left: 0; top: 0; width: 100vw; height: 100vh;  
+    background: rgba(0,0,0,0.3);  
+    align-items: center;  
+    justify-content: center;  
+}  
+ 
+.modal-content { 
+    background: #fff; 
+    padding: 2rem; 
+    border-radius: 10px; 
+    min-width: 320px; 
+    max-width: 90vw; 
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12); 
+    display: flex; 
+    flex-direction: column;  
+    gap: 1rem;  
+}  
+ 
+.modal-content label { 
+    font-weight: 500; 
+    color: #4f46e5; 
+} 
+ 
+.modal-content input[type="text"], 
+.modal-content input[type="email"], 
+.modal-content input[type="password"] {  
+    padding: 0.5rem;  
+    border: 1px solid #cbd5e1;  
+    border-radius: 6px;  
+    font-size: 1rem;  
+}  
+  
+.modal-actions { 
+    display: flex; 
+    gap: 1rem; 
+    justify-content: flex-end; 
+}  
+  
+.save-btn {  
+    background: #4f46e5;  
+    color: #fff;  
+    border: none;  
+    border-radius: 6px;  
+    padding: 0.5rem 1.2rem; 
+    font-weight: 500; 
+    cursor: pointer;  
+    transition: background 0.2s;  
+}  
+.save-btn:hover {  
+    background: #3730a3;  
+}  
+.cancel-btn {  
+    background: #e5e7eb;  
+    color: #22223b;  
+    border: none; 
+    border-radius: 6px; 
+    padding: 0.5rem 1.2rem; 
+    font-weight: 500;  
+    cursor: pointer;  
+    transition: background 0.2s;  
+}  
+.cancel-btn:hover {  
+    background: #cbd5e1;  
+} 
+ 
+.projects-section { 
+    margin-bottom: 2rem; 
+} 
+ 
+.projects-list { 
+    list-style: none;  
+    padding: 0;  
+    margin: 0;  
+}  
+  
+.project-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: #f8fafc; 
+    border: 1px solid #e5e7eb; 
+    border-radius: 8px; 
+    margin-bottom: 1rem; 
+    padding: 0.8rem 1rem;  
+}  
+  
+.project-title {  
+    font-weight: 600;  
+    color: #4f46e5; 
+    margin-right: 1rem; 
+} 
+ 
+.project-desc { 
+    color: #334155; 
+    margin-left: 0.5rem;  
+}  
+  
+.delete-form {  
+    display: inline;  
+}  
+  
+.delete-btn { 
+    background-color: #ef4444; 
+    color: #fff; 
+    border: none; 
+    padding: 0.4rem 0.9rem;  
+    border-radius: 4px;  
+    cursor: pointer;  
+    font-weight: 500;  
+    transition: background 0.2s;  
+}  
+.delete-btn:hover {  
+    background-color: #b91c1c; 
+} 
+ 
+.pagination { 
+    display: flex;  
+    gap: 1rem;  
+    justify-content: center;  
+    margin-top: 1rem;  
+}  
+  
+.pagination-btn {  
+    background: #6366f1; 
+    color: #fff; 
+    border: none;  
+    border-radius: 6px;  
+    padding: 0.4rem 1rem;  
+    font-weight: 500;  
+    text-decoration: none;  
+    transition: background 0.2s;  
+}  
+.pagination-btn:hover {  
+    background: #3730a3;  
+}  
+  
+.profile-picture-section {  
+    margin-top: 2rem;  
+    text-align: center;  
+}  
+  
+.profile-picture-form label {  
+    font-weight: 500;  
+    color: #4f46e5; 
+} 
+  
+.profile-picture-form input[type="file"] {  
+    margin: 0.5rem 0;  
+}  
+  
+.upload-btn {  
+    background: #4f46e5;  
+    color: #fff; 
+    border: none; 
+    border-radius: 6px; 
+    padding: 0.5rem 1.2rem; 
+    font-weight: 500; 
+    cursor: pointer; 
+    transition: background 0.2s; 
+} 
+.upload-btn:hover { 
+    background: #3730a3; 
+} 
