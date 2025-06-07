@@ -30,6 +30,11 @@ switch ($request) {
         LandingPageController::showLandingPage();
         break;
     case '/upload':
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            header('Location: /login');
+            exit;
+        }
+        
         $upload = new UploadController();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
