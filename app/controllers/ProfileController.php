@@ -7,12 +7,6 @@ class ProfileController
 {
     public static function showProfile()
     {
-        // Fetch user data from the database
-        // if (!isset($_SESSION['user_id'])) {
-        //     header('Location: /login');
-        //     exit;
-        // }
-
         $userId = $_SESSION['user_id'];
         $user = User::findById($userId);
 
@@ -61,11 +55,6 @@ class ProfileController
 
     public static function deleteProject()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
-        }
-
         $projectId = $_POST['project_id'];
 
         global $conn;
