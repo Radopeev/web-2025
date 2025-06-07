@@ -8,10 +8,10 @@ class ProfileController
     public static function showProfile()
     {
         // Fetch user data from the database
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
-        }
+        // if (!isset($_SESSION['user_id'])) {
+        //     header('Location: /login');
+        //     exit;
+        // }
 
         $userId = $_SESSION['user_id'];
         $user = User::findById($userId);

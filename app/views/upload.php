@@ -11,7 +11,7 @@
     <ul id="selected-files-list"></ul>
 
     <label>Or Select a Directory:</label>
-    <input type="file" id="directory_files" name="directory_files[]" webkitdirectory multiple><br>
+    <input type="file" id="directory_files" name="directory_files[]" webkitdirectory directory multiple><br>
 
     <label>Configuration File:</label>
     <input type="file" name="config_file"><br>
