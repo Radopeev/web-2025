@@ -59,14 +59,44 @@ class ProfileController
 
         global $conn;
 
-        // Delete associated files first
+        // Fetch associated files for the project
+        $stmt = $conn->prepare("SELECT file_path FROM files WHERE project_id = ?");
+        if (!$stmt) {
+            return;
+        }
+        $stmt->bind_param("i", $projectId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $filePath = $row['file_path'];
+            $absolutePathSources = realpath('public/uploads/sources/' . $filePath);
+            $absolutePathConfigs = realpath('public/uploads/configs/' . $filePath);
+
+            if ($absolutePathSources && file_exists($absolutePathSources)) {
+                unlink($absolutePathSources);
+            }
+
+            if ($absolutePathConfigs && file_exists($absolutePathConfigs)) {
+                unlink($absolutePathConfigs);
+            }
+        }
+        $stmt->close();
+
+        // Delete associated files from the database
         $stmt = $conn->prepare("DELETE FROM files WHERE project_id = ?");
+        if (!$stmt) {
+            return;
+        }
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
 
         // Then delete the project
         $stmt = $conn->prepare("DELETE FROM projects WHERE id = ?");
+        if (!$stmt) {
+            return;
+        }
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
