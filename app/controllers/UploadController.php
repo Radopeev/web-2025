@@ -2,7 +2,7 @@
 require_once 'config/database.php';
 
 class UploadController {
-    public function handleUpload() {
+    public static function handleUpload() {
         global $conn;
         if (session_status() === PHP_SESSION_NONE) {
             session_start();

@@ -4,6 +4,7 @@ const APP_ROOT = __DIR__ . '/../';
 require_once APP_ROOT . 'app/controllers/AuthController.php';
 require_once APP_ROOT . 'app/controllers/LandingPageController.php';
 require_once APP_ROOT . 'app/controllers/UploadController.php';
+require_once APP_ROOT . 'app/controllers/ProjectController.php';
 require_once APP_ROOT . 'app/controllers/ProfileController.php';
 
 function require_auth() {
@@ -16,11 +17,11 @@ function require_auth() {
     }
 }
 
-// Serve static files directly if they exist
 $path = __DIR__ . '/../' . $_SERVER['REQUEST_URI'];
 if (php_sapi_name() === 'cli-server' && is_file($path)) {
     return false;
 }
+
 
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -40,6 +41,12 @@ switch ($request) {
         // ... I recommend forcing authentication only for details pages or upload page.
 
         LandingPageController::showLandingPage();
+        break;
+    case '/project/details':
+        ProjectController::showProjectDetails();
+        break;
+    case '/project/edit':
+        ProjectController::editProject();
         break;
     case '/upload':
         require_auth();

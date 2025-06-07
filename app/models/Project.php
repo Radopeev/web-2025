@@ -1,69 +1,64 @@
 <?php
 
+// Assume $conn is globally available and a mysqli instance
+// For production, consider dependency injection instead of global $conn
+
 class Project {
 
-    public static function getAllProjects(): array {
+    /**
+     * Retrieves a paginated list of projects, with optional search capabilities.
+     * (Existing method, included for context)
+     */
+    public static function getPaginatedProjects(string $searchQuery = '', int $limit = 10, int $offset = 0): array {
         global $conn;
 
         if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::getAllProjects.");
+            error_log("MySQLi connection not available in Project::getPaginatedProjects.");
             return [];
-        }
-
-        try {
-            $result = $conn->query("SELECT id, user_id, title, description, config_file, created_at FROM projects ORDER BY created_at DESC");
-
-            if ($result) {
-                return $result->fetch_all(MYSQLI_ASSOC);
-            } else {
-                error_log("Error executing query in getAllProjects: " . $conn->error);
-                return [];
-            }
-        } catch (Exception $e) {
-            error_log("Error fetching all projects: " . $e->getMessage());
-            return [];
-        }
-    }
-
-    public static function searchProjects(string $query): array {
-        global $conn;
-
-        if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::searchProjects.");
-            return [];
-        }
-
-        if (empty($query)) {
-            return self::getAllProjects();
         }
 
         try {
             $sql = "SELECT id, user_id, title, description, config_file, created_at
-                    FROM projects
-                    WHERE title LIKE ? OR description LIKE ?
-                    ORDER BY created_at DESC";
+                    FROM projects";
+            $params = [];
+            $types = '';
+
+            // Add search conditions if a search query is provided
+            if (!empty($searchQuery)) {
+                $sql .= " WHERE title LIKE ? OR description LIKE ?";
+                $searchTerm = '%' . $searchQuery . '%';
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+                $types .= 'ss'; // 's' for string, two 's' for two parameters
+            }
+
+            $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?"; // Add LIMIT and OFFSET for pagination
 
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
-                error_log("Error preparing statement in searchProjects: " . $conn->error);
+                error_log("Error preparing statement in getPaginatedProjects: " . $conn->error);
                 return [];
             }
 
-            $searchTerm = '%' . $query . '%';
-            $stmt->bind_param('ss', $searchTerm, $searchTerm);
+            // Bind parameters dynamically using call_user_func_array
+            $params[] = $limit;
+            $params[] = $offset;
+            $types .= 'ii';
+
+            $bindArgs = [];
+            $bindArgs[] = &$types;
+            for ($i = 0; $i < count($params); $i++) {
+                $bindArgs[] = &$params[$i];
+            }
+
+            call_user_func_array([$stmt, 'bind_param'], $bindArgs);
 
             $stmt->execute();
-
             $result = $stmt->get_result();
 
-            if ($result) {
-                return $result->fetch_all(MYSQLI_ASSOC);
-            } else {
-                error_log("Error getting result in searchProjects: " . $stmt->error);
-                return [];
-            }
+            return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
         } catch (Exception $e) {
-            error_log("Error searching projects: " . $e->getMessage());
+            error_log("Error fetching paginated projects: " . $e->getMessage());
             return [];
         } finally {
             if (isset($stmt) && $stmt) {
@@ -73,40 +68,82 @@ class Project {
     }
 
     /**
-     * Retrieves a single project by its ID from the database.
-     *
-     * @param int $id The ID of the project to retrieve.
-     * @return array|null The project data if found, otherwise null.
+     * Gets the total count of projects, with optional search capabilities.
+     * (Existing method, included for context)
      */
-    public static function getProjectById(int $id): ?array {
-        // Access the global mysqli connection variable
+    public static function getTotalProjectCount(string $searchQuery = ''): int {
         global $conn;
 
-        // Ensure the connection is valid before proceeding
         if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::getProjectById.");
+            error_log("MySQLi connection not available in Project::getTotalProjectCount.");
+            return 0;
+        }
+
+        try {
+            $sql = "SELECT COUNT(*) FROM projects";
+            $params = [];
+            $types = '';
+
+            // Add search conditions if a search query is provided
+            if (!empty($searchQuery)) {
+                $sql .= " WHERE title LIKE ? OR description LIKE ?";
+                $searchTerm = '%' . $searchQuery . '%';
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+                $types .= 'ss';
+            }
+
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Error preparing statement in getTotalProjectCount: " . $conn->error);
+                return 0;
+            }
+
+            if (!empty($params)) {
+                $bindArgs = [];
+                $bindArgs[] = &$types;
+                for ($i = 0; $i < count($params); $i++) {
+                    $bindArgs[] = &$params[$i];
+                }
+                call_user_func_array([$stmt, 'bind_param'], $bindArgs);
+            }
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            return $result ? $result->fetch_row()[0] : 0;
+        } catch (Exception $e) {
+            error_log("Error counting projects: " . $e->getMessage());
+            return 0;
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
+
+    /**
+     * Retrieves a single project's details by its ID.
+     * Renamed from getProjectDetails to getById for clarity and consistency.
+     */
+    public static function getById(int $projectId): ?array {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getById.");
             return null;
         }
 
         try {
-            $sql = "SELECT id, user_id, title, description, config_file, created_at FROM projects WHERE id = ? LIMIT 1";
-            $stmt = $conn->prepare($sql);
+            $stmt = $conn->prepare("SELECT id, user_id, title, description, config_file, created_at FROM projects WHERE id = ?");
             if (!$stmt) {
-                error_log("Error preparing statement in getProjectById: " . $conn->error);
+                error_log("Error preparing statement in getById: " . $conn->error);
                 return null;
             }
-
-            $stmt->bind_param('i', $id); // 'i' indicates an integer parameter
+            $stmt->bind_param('i', $projectId);
             $stmt->execute();
             $result = $stmt->get_result();
-
-            if ($result) {
-                $project = $result->fetch_assoc(); // Fetch a single row as an associative array
-                return $project ?: null; // Return null if no project found
-            } else {
-                error_log("Error getting result in getProjectById: " . $stmt->error);
-                return null;
-            }
+            return $result ? $result->fetch_assoc() : null;
         } catch (Exception $e) {
             error_log("Error fetching project by ID: " . $e->getMessage());
             return null;
@@ -118,152 +155,362 @@ class Project {
     }
 
     /**
-     * Adds a new project to the database.
-     *
-     * @param int $userId The ID of the user owning the project.
-     * @param string $title The title of the project.
-     * @param string $description The description of the project.
-     * @param string|null $configFile The path to the configuration file (optional).
-     * @return int The ID of the newly inserted project, or 0 on failure.
+     * Retrieves all source files associated with a project.
+     * (Previously getProjectFiles, but renamed to be more specific to 'source' files).
      */
-    public static function addProject(int $userId, string $title, string $description, ?string $configFile = null): int {
+    public static function getProjectSourceFiles(int $projectId): array {
         global $conn;
+
         if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::addProject.");
-            return 0;
-        }
-
-        try {
-            $sql = "INSERT INTO projects (user_id, title, description, config_file) VALUES (?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) {
-                error_log("Error preparing statement in addProject: " . $conn->error);
-                return 0;
-            }
-
-            // 'isss' indicates integer, string, string, string parameters
-            $stmt->bind_param('isss', $userId, $title, $description, $configFile);
-
-            if ($stmt->execute()) {
-                return $conn->insert_id; // Get the ID of the newly inserted row
-            } else {
-                error_log("Error executing statement in addProject: " . $stmt->error);
-                return 0;
-            }
-        } catch (Exception $e) {
-            error_log("Error adding project: " . $e->getMessage());
-            return 0;
-        } finally {
-            if (isset($stmt) && $stmt) {
-                $stmt->close();
-            }
-        }
-    }
-
-    /**
-     * Updates an existing project in the database.
-     *
-     * @param int $id The ID of the project to update.
-     * @param string $title The new title of the project.
-     * @param string $description The new description of the project.
-     * @param string|null $configFile The new path to the configuration file (optional).
-     * @return bool True on success, false on failure.
-     */
-    public static function updateProject(int $id, string $title, string $description, ?string $configFile = null): bool {
-        global $conn;
-        if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::updateProject.");
-            return false;
-        }
-
-        try {
-            $sql = "UPDATE projects SET title = ?, description = ?, config_file = ? WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) {
-                error_log("Error preparing statement in updateProject: " . $conn->error);
-                return false;
-            }
-
-            // 'sssi' indicates string, string, string, integer parameters
-            $stmt->bind_param('sssi', $title, $description, $configFile, $id);
-
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log("Error updating project: " . $e->getMessage());
-            return false;
-        } finally {
-            if (isset($stmt) && $stmt) {
-                $stmt->close();
-            }
-        }
-    }
-
-    /**
-     * Deletes a project from the database.
-     *
-     * @param int $id The ID of the project to delete.
-     * @return bool True on success, false on failure.
-     */
-    public static function deleteProject(int $id): bool {
-        global $conn;
-        if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::deleteProject.");
-            return false;
-        }
-
-        try {
-            $sql = "DELETE FROM projects WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) {
-                error_log("Error preparing statement in deleteProject: " . $conn->error);
-                return false;
-            }
-
-            $stmt->bind_param('i', $id); // 'i' indicates an integer parameter
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log("Error deleting project: " . $e->getMessage());
-            return false;
-        } finally {
-            if (isset($stmt) && $stmt) {
-                $stmt->close();
-            }
-        }
-    }
-
-    /**
-     * Retrieves projects owned by a specific user.
-     *
-     * @param int $userId The ID of the user.
-     * @return array An array of projects owned by the user.
-     */
-    public static function getProjectsByUserId(int $userId): array {
-        global $conn;
-        if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::getProjectsByUserId.");
+            error_log("MySQLi connection not available in Project::getProjectSourceFiles.");
             return [];
         }
 
         try {
-            $sql = "SELECT id, user_id, title, description, config_file, created_at FROM projects WHERE user_id = ? ORDER BY created_at DESC";
-            $stmt = $conn->prepare($sql);
+            // Assuming your 'files' table has an 'is_config' column or similar
+            // to distinguish source files from config files.
+            // If not, you might need a separate 'source_files' table or adjust schema.
+            $stmt = $conn->prepare("SELECT id, project_id, original_name, file_path, uploaded_at FROM files WHERE project_id = ? ORDER BY uploaded_at DESC");
             if (!$stmt) {
-                error_log("Error preparing statement in getProjectsByUserId: " . $conn->error);
+                error_log("Error preparing statement in getProjectSourceFiles: " . $conn->error);
                 return [];
             }
+            $stmt->bind_param('i', $projectId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        } catch (Exception $e) {
+            error_log("Error fetching project source files: " . $e->getMessage());
+            return [];
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
 
-            $stmt->bind_param('i', $userId); // 'i' indicates an integer parameter
+    /**
+     * Retrieves all instruments associated with a project.
+     * (Existing method, included for context)
+     */
+    public static function getProjectInstruments(int $projectId): array {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getProjectInstruments.");
+            return [];
+        }
+
+        try {
+            $stmt = $conn->prepare("SELECT id, project_id, name, type, description, access_link FROM instruments WHERE project_id = ? ORDER BY name ASC");
+            if (!$stmt) {
+                error_log("Error preparing statement in getProjectInstruments: " . $conn->error);
+                return [];
+            }
+            $stmt->bind_param('i', $projectId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        } catch (Exception $e) {
+            error_log("Error fetching project instruments: " . $e->getMessage());
+            return [];
+        } finally {
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
+            }
+        }
+    }
+
+    /**
+     * Updates an existing project's title and description in the database.
+     * Renamed from updateProject to update for broader applicability.
+     *
+     * @param int $projectId The ID of the project to update.
+     * @param array $data An associative array of data to update (e.g., ['title' => 'New Title']).
+     * @return bool True on success, false on failure.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function update(int $projectId, array $data): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        $setParts = [];
+        $params = [];
+        $types = '';
+
+        // 1. Retrieve the current values for the project from the database.
+        // We select all columns that might be updated to compare against new data.
+        $selectSql = "SELECT title, description FROM projects WHERE id = ?";
+        $selectStmt = $conn->prepare($selectSql);
+
+        if ($selectStmt === false) {
+            // Throw an exception if the SELECT statement itself cannot be prepared.
+            throw new mysqli_sql_exception("Failed to prepare SELECT statement: " . $conn->error);
+        }
+
+        // Bind the project ID for the SELECT query.
+        $selectStmt->bind_param('i', $projectId);
+        $selectStmt->execute();
+        $result = $selectStmt->get_result();
+        $currentProjectData = $result->fetch_assoc(); // Fetch the current row data.
+        $selectStmt->close();
+
+        if( (isset($data['title']) && $data['title'] === $currentProjectData['title'])
+            ||(isset($data['description']) && $data['description'] && $data['description'] === $currentProjectData['description'])) {
+            return true;
+        }
+
+        if (isset($data['title'])) {
+            $setParts[] = "title = ?";
+            $params[] = $data['title'];
+            $types .= 's';
+        }
+        if (isset($data['description'])) {
+            $setParts[] = "description = ?";
+            $params[] = $data['description'];
+            $types .= 's';
+        }
+
+        if (empty($setParts)) {
+            return false; // Nothing to update
+        }
+
+        $sql = "UPDATE projects SET " . implode(', ', $setParts) . " WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $params[] = $projectId; // Add projectId to parameters
+        $types .= 'i'; // Add type for projectId
+
+        // Bind parameters dynamically using call_user_func_array
+        $bindArgs = [];
+        $bindArgs[] = &$types;
+        for ($i = 0; $i < count($params); $i++) {
+            $bindArgs[] = &$params[$i];
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bindArgs);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Updates an existing instrument record.
+     * Changed signature to accept instrument ID and an array of data.
+     *
+     * @param int $instrumentId The ID of the instrument to update.
+     * @param array $data An associative array of instrument data (e.g., ['name' => 'New Name']).
+     * @return bool True on success, false on failure.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function updateInstrument(int $instrumentId, array $data): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        $setParts = [];
+        $params = [];
+        $types = '';
+
+        if (isset($data['name'])) {
+            $setParts[] = "name = ?";
+            $params[] = $data['name'];
+            $types .= 's';
+        }
+        if (isset($data['type'])) {
+            $setParts[] = "type = ?";
+            $params[] = $data['type'];
+            $types .= 's';
+        }
+        if (isset($data['description'])) {
+            $setParts[] = "description = ?";
+            $params[] = $data['description'];
+            $types .= 's';
+        }
+        if (isset($data['access'])) {
+            $setParts[] = "access = ?";
+            $params[] = $data['access'];
+            $types .= 's';
+        }
+
+        if (empty($setParts)) {
+            return false; // Nothing to update
+        }
+
+        $sql = "UPDATE instruments SET " . implode(', ', $setParts) . " WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $params[] = $instrumentId; // Add instrumentId to parameters
+        $types .= 'i'; // Add type for instrumentId
+
+        $bindArgs = [];
+        $bindArgs[] = &$types;
+        for ($i = 0; $i < count($params); $i++) {
+            $bindArgs[] = &$params[$i];
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bindArgs);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Adds a new instrument record to the database for a specific project.
+     * Changed signature to accept an array of data.
+     *
+     * @param int $projectId The ID of the project to associate with.
+     * @param array $data An associative array of instrument data (name, type, description, access).
+     * @return bool True on success, false on failure.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function addInstrument(int $projectId, array $data): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        // Ensure all required fields are present in $data for insertion
+        $requiredFields = ['name', 'type', 'description', 'access'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                throw new InvalidArgumentException("Missing required instrument field: " . $field);
+            }
+        }
+
+        $sql = "INSERT INTO instruments (project_id, name, type, description, access) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("issss",
+            $projectId,
+            $data['name'],
+            $data['type'],
+            $data['description'],
+            $data['access']
+        );
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Deletes multiple instrument records by their IDs.
+     *
+     * @param array $instrumentIds An array of instrument IDs to delete.
+     * @return bool True on success, false if no rows were affected or on error.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function deleteInstruments(array $instrumentIds): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        if (empty($instrumentIds)) {
+            return true; // Nothing to delete
+        }
+
+        // Create a string of placeholders for the IN clause (?, ?, ?)
+        $placeholders = implode(',', array_fill(0, count($instrumentIds), '?'));
+        $types = str_repeat('i', count($instrumentIds)); // All IDs are integers
+
+        $sql = "DELETE FROM instruments WHERE id IN ($placeholders)";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        // Bind parameters dynamically
+        $bindArgs = [];
+        $bindArgs[] = &$types;
+        for ($i = 0; $i < count($instrumentIds); $i++) {
+            $bindArgs[] = &$instrumentIds[$i]; // Pass each ID by reference
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bindArgs);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Retrieves file paths for given source file IDs.
+     * Useful before deleting files from storage.
+     *
+     * @param array $fileIds An array of source file IDs.
+     * @return array An array of file paths.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function getSourceFilePathsByIds(array $fileIds): array {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getSourceFilePathsByIds.");
+            return [];
+        }
+
+        if (empty($fileIds)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($fileIds), '?'));
+        $types = str_repeat('i', count($fileIds));
+
+        try {
+            $sql = "SELECT file_path FROM files WHERE id IN ($placeholders)";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+            }
+
+            $bindArgs = [];
+            $bindArgs[] = &$types;
+            for ($i = 0; $i < count($fileIds); $i++) {
+                $bindArgs[] = &$fileIds[$i];
+            }
+            call_user_func_array([$stmt, 'bind_param'], $bindArgs);
+
             $stmt->execute();
             $result = $stmt->get_result();
 
+            $paths = [];
             if ($result) {
-                return $result->fetch_all(MYSQLI_ASSOC);
-            } else {
-                error_log("Error getting result in getProjectsByUserId: " . $stmt->error);
-                return [];
+                while ($row = $result->fetch_assoc()) {
+                    $paths[] = $row['file_path'];
+                }
             }
+            return $paths;
         } catch (Exception $e) {
-            error_log("Error fetching user projects: " . $e->getMessage());
+            error_log("Error getting source file paths by IDs: " . $e->getMessage());
             return [];
         } finally {
             if (isset($stmt) && $stmt) {
@@ -272,6 +519,146 @@ class Project {
         }
     }
 
+
+    /**
+     * Adds a new source file record to the database for a specific project.
+     *
+     * @param int $projectId The ID of the project to associate with.
+     * @param string $fileName The original name of the file.
+     * @param string $filePath The stored path of the file.
+     * @return bool True on success, false on failure.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function addSourceFile(int $projectId, string $fileName, string $filePath): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        $sql = "INSERT INTO files (project_id, original_name, file_path) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("iss", $projectId, $fileName, $filePath);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Deletes multiple source file records by their IDs.
+     *
+     * @param array $fileIds An array of source file IDs to delete.
+     * @return bool True on success, false if no rows were affected or on error.
+     * @throws mysqli_sql_exception If a database error occurs.
+     * @throws Exception
+     */
+    public static function deleteSourceFiles(array $fileIds): bool {
+        global $conn;
+
+        foreach($fileIds as $fileId) {
+            error_log($fileId);
+        }
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        if (empty($fileIds)) {
+            return true; // Nothing to delete
+        }
+
+        $placeholders = implode(',', array_fill(0, count($fileIds), '?'));
+        $types = str_repeat('i', count($fileIds));
+
+        $sql = "DELETE FROM files WHERE id IN ($placeholders)"; // Ensure only source files are deleted
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $bindArgs = [];
+        $bindArgs[] = &$types;
+        for ($i = 0; $i < count($fileIds); $i++) {
+            $bindArgs[] = &$fileIds[$i];
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bindArgs);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Deletes the configuration file path from a project record in the database.
+     *
+     * @param int $projectId The ID of the project.
+     * @return bool True on success, false on failure.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function deleteConfigFile(int $projectId): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        $sql = "UPDATE projects SET config_file = NULL WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("i", $projectId);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
+    /**
+     * Updates the configuration file path for a project record in the database.
+     *
+     * @param int $projectId The ID of the project.
+     * @param string $filePath The new file path for the configuration file.
+     * @return bool True on success, false on failure.
+     * @throws mysqli_sql_exception If a database error occurs.
+     */
+    public static function updateConfigFile(int $projectId, string $filePath): bool {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        $sql = "UPDATE projects SET config_file = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("si", $filePath, $projectId);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+}
     public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array {
         global $conn;
         if (!$conn instanceof mysqli) {
