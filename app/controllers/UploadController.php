@@ -5,7 +5,25 @@ class UploadController {
     public function handleUpload() {
         global $conn;
         session_start();
-        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;
+
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            echo "Error: User not logged in or invalid user ID.";
+            exit;
+        }
+
+        $user_id = $_SESSION['user_id'];
+
+        // Check if user exists in the database
+        $stmt = $conn->prepare("SELECT id FROM users WHERE id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            echo "Error: User does not exist.";
+            exit;
+        }
+        $stmt->close();
 
         $title = $_POST['title'];
         $description = $_POST['description'];

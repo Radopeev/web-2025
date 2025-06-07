@@ -272,39 +272,33 @@ class Project {
         }
     }
 
-    /**
-     * Retrieves files associated with a specific project.
-     *
-     * @param int $projectId The ID of the project.
-     * @return array An array of files associated with the project.
-     */
-    public static function getFilesByProjectId(int $projectId): array {
+    public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array {
         global $conn;
         if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::getFilesByProjectId.");
+            error_log("MySQLi connection not available in Project::getProjectsByUserIdPaginated.");
             return [];
         }
 
         try {
-            $sql = "SELECT id, file_path, original_name, uploaded_at FROM files WHERE project_id = ?";
+            $sql = "SELECT id, title, description FROM projects WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
-                error_log("Error preparing statement in getFilesByProjectId: " . $conn->error);
+                error_log("Error preparing statement in getProjectsByUserIdPaginated: " . $conn->error);
                 return [];
             }
 
-            $stmt->bind_param('i', $projectId);
+            $stmt->bind_param('iii', $userId, $limit, $offset);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result) {
                 return $result->fetch_all(MYSQLI_ASSOC);
             } else {
-                error_log("Error getting result in getFilesByProjectId: " . $stmt->error);
+                error_log("Error getting result in getProjectsByUserIdPaginated: " . $stmt->error);
                 return [];
             }
         } catch (Exception $e) {
-            error_log("Error fetching files by project ID: " . $e->getMessage());
+            error_log("Error fetching paginated projects: " . $e->getMessage());
             return [];
         } finally {
             if (isset($stmt) && $stmt) {
@@ -313,40 +307,35 @@ class Project {
         }
     }
 
-    /**
-     * Retrieves instruments associated with a specific project.
-     *
-     * @param int $projectId The ID of the project.
-     * @return array An array of instruments associated with the project.
-     */
-    public static function getInstrumentsByProjectId(int $projectId): array {
+    public static function countProjectsByUserId(int $userId): int {
         global $conn;
         if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::getInstrumentsByProjectId.");
-            return [];
+            error_log("MySQLi connection not available in Project::countProjectsByUserId.");
+            return 0;
         }
 
         try {
-            $sql = "SELECT id, name, type, description, access_link FROM instruments WHERE project_id = ?";
+            $sql = "SELECT COUNT(*) as total FROM projects WHERE user_id = ?";
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
-                error_log("Error preparing statement in getInstrumentsByProjectId: " . $conn->error);
-                return [];
+                error_log("Error preparing statement in countProjectsByUserId: " . $conn->error);
+                return 0;
             }
 
-            $stmt->bind_param('i', $projectId);
+            $stmt->bind_param('i', $userId);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result) {
-                return $result->fetch_all(MYSQLI_ASSOC);
+                $row = $result->fetch_assoc();
+                return (int) $row['total'];
             } else {
-                error_log("Error getting result in getInstrumentsByProjectId: " . $stmt->error);
-                return [];
+                error_log("Error getting result in countProjectsByUserId: " . $stmt->error);
+                return 0;
             }
         } catch (Exception $e) {
-            error_log("Error fetching instruments by project ID: " . $e->getMessage());
-            return [];
+            error_log("Error counting projects: " . $e->getMessage());
+            return 0;
         } finally {
             if (isset($stmt) && $stmt) {
                 $stmt->close();

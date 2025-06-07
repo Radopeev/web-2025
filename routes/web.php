@@ -42,8 +42,14 @@ switch ($request) {
     case '/profile':
         ProfileController::showProfile();
         break;
-    case '/project_details':
-        require_once APP_ROOT . 'app/views/project_details.php';
+    case '/update_profile':
+        ProfileController::updateProfile();
+        break;
+    case '/delete_project':
+        ProfileController::deleteProject();
+        break;
+    case '/upload_profile_picture':
+        ProfileController::uploadProfilePicture();
         break;
     default:
         http_response_code(404);

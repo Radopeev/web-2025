@@ -15,7 +15,7 @@ class User {
     public static function create($username, $email, $passwordHash) {
         global $conn;
         $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("ssss", $username, $email, $passwordHash,);
+        $stmt->bind_param("sss", $username, $email, $passwordHash);
         return $stmt->execute();
     }
 
@@ -27,5 +27,13 @@ class User {
         $stmt->execute();
 
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    public static function updateProfilePicture($userId, $filePath) {
+        global $conn;
+        $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
+        $stmt->bind_param("si", $filePath, $userId);
+        $stmt->execute();
+        $stmt->close();
     }
 }
