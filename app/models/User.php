@@ -14,7 +14,7 @@ class User {
 
     public static function create($username, $email, $passwordHash) {
         global $conn;
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password,) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
         $stmt->bind_param("ssss", $username, $email, $passwordHash,);
         return $stmt->execute();
     }
