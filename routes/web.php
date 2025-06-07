@@ -6,6 +6,16 @@ require_once APP_ROOT . 'app/controllers/LandingPageController.php';
 require_once APP_ROOT . 'app/controllers/UploadController.php';
 require_once APP_ROOT . 'app/controllers/ProfileController.php';
 
+function require_auth() {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        header('Location: /login');
+        exit;
+    }
+}
+
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 switch ($request) {
@@ -31,10 +41,7 @@ switch ($request) {
         LandingPageController::showLandingPage();
         break;
     case '/upload':
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            header('Location: /login');
-            exit;
-        }
+        require_auth();
         
         $upload = new UploadController();
 
@@ -45,15 +52,19 @@ switch ($request) {
         }
         break;
     case '/profile':
+        require_auth();
         ProfileController::showProfile();
         break;
     case '/update_profile':
+        require_auth();
         ProfileController::updateProfile();
         break;
     case '/delete_project':
+        require_auth();
         ProfileController::deleteProject();
         break;
     case '/upload_profile_picture':
+        require_auth();
         ProfileController::uploadProfilePicture();
         break;
     default:
