@@ -658,7 +658,7 @@ class Project {
             throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
         }
     }
-}
+
     public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array {
         global $conn;
         if (!$conn instanceof mysqli) {
