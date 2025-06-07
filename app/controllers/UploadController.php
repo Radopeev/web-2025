@@ -2,7 +2,7 @@
 require_once 'config/database.php';
 
 class UploadController {
-    public function handleUpload() {
+    public static function handleUpload() {
         global $conn;
         session_start();
         $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;
@@ -31,7 +31,6 @@ class UploadController {
                 $filePath = 'public/uploads/sources/' . $uniqueName;
                 move_uploaded_file($tmpName, $filePath);
 
-                // Insert both the saved file path and the original file name
                 $stmt = $conn->prepare("INSERT INTO files (project_id, file_path, original_name) VALUES (?, ?, ?)");
                 $stmt->bind_param("iss", $project_id, $filePath, $originalName);
                 $stmt->execute();

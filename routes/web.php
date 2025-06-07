@@ -4,6 +4,7 @@ const APP_ROOT = __DIR__ . '/../';
 require_once APP_ROOT . 'app/controllers/AuthController.php';
 require_once APP_ROOT . 'app/controllers/LandingPageController.php';
 require_once APP_ROOT . 'app/controllers/UploadController.php';
+require_once APP_ROOT . 'app/controllers/ProjectController.php';
 
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -28,6 +29,12 @@ switch ($request) {
         // }
 
         LandingPageController::showLandingPage();
+        break;
+    case '/project/details':
+        ProjectController::showProjectDetails();
+        break;
+    case '/project/edit':
+        ProjectController::editProject();
         break;
     case '/upload':
         $upload = new UploadController();
