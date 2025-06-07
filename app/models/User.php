@@ -12,11 +12,21 @@ class User {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public static function create($username, $email, $passwordHash) {
+    public static function create($username, $email, $password) {
         global $conn;
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $passwordHash);
-        return $stmt->execute();
+        try {
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $email, $password);
+            $stmt->execute();
+            $stmt->close();
+            return true;
+        } catch (mysqli_sql_exception $e) {
+            // Duplicate entry error code is 1062
+            if ($e->getCode() == 1062) {
+                return false;
+            }
+            throw $e; // rethrow other exceptions
+        }
     }
 
     public static function findById($id) {

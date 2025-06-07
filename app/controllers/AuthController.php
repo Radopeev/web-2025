@@ -34,13 +34,12 @@ class AuthController {
             $username = $_POST['username'];
             $email = $_POST['email'];
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-            // $role = $_POST['role'];
 
             if (User::create($username, $email, $password)) {
                 header('Location: /landingPage');
                 exit;
             } else {
-                $error = "Registration failed.";
+                $error = "Registration failed: Email is already in use.";
             }
         }
         

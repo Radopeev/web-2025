@@ -11,6 +11,8 @@
 
 <p>Already have an account? <a href="/login">Login</a></p>
 
-<?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
+<?php if (isset($error)): ?>
+    <div class="error"><?= htmlspecialchars($error) ?></div>
+<?php endif; ?>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>
