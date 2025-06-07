@@ -1,6 +1,8 @@
 # web-2025
 
-### run project
+## run project
+
+### manually
 1. Have php installed.
    - on Windows: https://www.geeksforgeeks.org/how-to-install-php-in-windows-10/
       - you need to edit `php.ini` to uncomment `extension_dir = "ext"` and `extension=mysqli` lines. (If it's missing make a copy of `php.ini-development` and rename it).
@@ -18,3 +20,14 @@
 <br>
 
 4. run `php -S localhost:8000`
+
+
+### via Docker
+
+1. Have Docker installed (and have Docker Desktop open)
+
+2. run `docker-compose up --build` in the project root directory
+
+> [!NOTE]
+> If you wish to open a shell to the docker use: `docker exec -it web-2025-php-1 sh` or `winpty docker exec -it web-2025-php-1 sh`
+> 

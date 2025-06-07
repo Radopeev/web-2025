@@ -12,10 +12,38 @@ class User {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public static function create($username, $email, $passwordHash) {
+    public static function create($username, $email, $password) {
         global $conn;
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("ssss", $username, $email, $passwordHash,);
-        return $stmt->execute();
+        try {
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $email, $password);
+            $stmt->execute();
+            $stmt->close();
+            return true;
+        } catch (mysqli_sql_exception $e) {
+            // Duplicate entry error code is 1062
+            if ($e->getCode() == 1062) {
+                return false;
+            }
+            throw $e; // rethrow other exceptions
+        }
+    }
+
+    public static function findById($id) {
+        global $conn;
+
+        $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public static function updateProfilePicture($userId, $filePath) {
+        global $conn;
+        $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
+        $stmt->bind_param("si", $filePath, $userId);
+        $stmt->execute();
+        $stmt->close();
     }
 }
