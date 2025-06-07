@@ -12,7 +12,8 @@ class UploadController {
 
         $configPath = '';
         if (!empty($_FILES['config_file']['tmp_name'])) {
-            $originalConfiName = uniqid() . '_' . basename($_FILES['source_files']['name'][$index]);
+            $originalConfigName = basename($_FILES['source_files']['name'][$index]);
+            $uniqueConfigName = uniqid() . '_' . $originalConfiName;
             $configPath = 'public/uploads/configs/' . $originalConfiName;
             move_uploaded_file($_FILES['config_file']['tmp_name'], $configPath);
         }
@@ -26,7 +27,7 @@ class UploadController {
         foreach ($_FILES['source_files']['tmp_name'] as $index => $tmpName) {
             if ($tmpName) {
                 $originalName = basename($_FILES['source_files']['name'][$index]);
-                $uniqueName = uniqid() . '_' . $originalName;
+                $uniqueName = uniqid() . '_' . basename($_FILES['source_files']['name'][$index]);
                 $filePath = 'public/uploads/sources/' . $uniqueName;
                 move_uploaded_file($tmpName, $filePath);
 
