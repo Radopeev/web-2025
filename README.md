@@ -1,6 +1,6 @@
 # web-2025
 
-### run project
+## run project
 
 ### manually
 1. Have php installed.
@@ -22,13 +22,12 @@
 4. run `php -S localhost:8000`
 
 
-#### via docker
+### via Docker
 
-1. Have docker installed (and Docker Desktop)
+1. Have Docker installed (and Docker Desktop)
 
 2. run `docker-compose up --build` in the project root directory
 
-```
-Note: If you wish to open a shell to the docker use: `docker exec -it web-2025-php-1 sh` or `winpty docker exec -it web-2025-php-1 sh`
-
-```
+> [!NOTE]
+> If you wish to open a shell to the docker use: `docker exec -it web-2025-php-1 sh` or `winpty docker exec -it web-2025-php-1 sh`
+> 
