@@ -44,6 +44,10 @@ function closeEditProfileModal() {
             <?php echo htmlspecialchars($project['title']); ?>
             <br>
             &emsp;<?php echo htmlspecialchars($project['description']); ?>
+            <form action="/delete_project" method="POST" style="display:inline;">
+                <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
+                <button type="submit" style="background-color:red; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Delete</button>
+            </form>
         </li>
     <?php endforeach; ?>
 </ul>
