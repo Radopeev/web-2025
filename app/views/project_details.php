@@ -6,7 +6,7 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-$projectId = (int)$_GET['id'];
+$projectId = (int) $_GET['id'];
 $project = Project::getProjectById($projectId);
 $files = Project::getFilesByProjectId($projectId);
 $instruments = Project::getInstrumentsByProjectId($projectId);

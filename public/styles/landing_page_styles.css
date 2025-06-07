@@ -77,7 +77,7 @@
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(79,70,229,0.06);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.06);
     padding: 1.2rem 1rem 1rem 1rem;
     display: flex;
     flex-direction: column;
@@ -87,7 +87,7 @@
 }
 
 .project-card:hover {
-    box-shadow: 0 4px 16px rgba(79,70,229,0.13);
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.13);
 }
 
 .project-info h3 {

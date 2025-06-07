@@ -7,7 +7,8 @@ require_once APP_ROOT . 'app/controllers/UploadController.php';
 require_once APP_ROOT . 'app/controllers/ProjectController.php';
 require_once APP_ROOT . 'app/controllers/ProfileController.php';
 
-function require_auth() {
+function require_auth()
+{
     if (!isset($_SESSION)) {
         session_start();
     }
@@ -44,7 +45,7 @@ switch ($request) {
         break;
     case '/upload':
         require_auth();
-        
+
         $upload = new UploadController();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -3,8 +3,10 @@ require_once __DIR__ . '/../models/User.php';
 
 session_start();
 
-class AuthController {
-    public static function login() {
+class AuthController
+{
+    public static function login()
+    {
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
             header('Location: /landingPage');
             exit;
@@ -25,11 +27,12 @@ class AuthController {
                 $error = "Invalid credentials.";
             }
         }
-        
+
         include __DIR__ . '/../views/auth/login.php';
     }
 
-    public static function register() {
+    public static function register()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'];
             $email = $_POST['email'];
@@ -42,11 +45,12 @@ class AuthController {
                 $error = "Registration failed: Email is already in use.";
             }
         }
-        
+
         include __DIR__ . '/../views/auth/register.php';
     }
 
-    public static function logout() {
+    public static function logout()
+    {
         session_destroy();
         header('Location: /login');
     }

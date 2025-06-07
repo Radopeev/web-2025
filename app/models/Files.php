@@ -2,7 +2,8 @@
 
 class File
 {
-    public static function update(int $id, array $arr): void {
+    public static function update(int $id, array $arr): void
+    {
 
     }
 }

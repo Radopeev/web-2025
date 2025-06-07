@@ -3,13 +3,15 @@
 // Assume $conn is globally available and a mysqli instance
 // For production, consider dependency injection instead of global $conn
 
-class Project {
+class Project
+{
 
     /**
      * Retrieves a paginated list of projects, with optional search capabilities.
      * (Existing method, included for context)
      */
-    public static function getPaginatedProjects(string $searchQuery = '', int $limit = 10, int $offset = 0): array {
+    public static function getPaginatedProjects(string $searchQuery = '', int $limit = 10, int $offset = 0): array
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -71,7 +73,8 @@ class Project {
      * Gets the total count of projects, with optional search capabilities.
      * (Existing method, included for context)
      */
-    public static function getTotalProjectCount(string $searchQuery = ''): int {
+    public static function getTotalProjectCount(string $searchQuery = ''): int
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -126,7 +129,8 @@ class Project {
      * Retrieves a single project's details by its ID.
      * Renamed from getProjectDetails to getById for clarity and consistency.
      */
-    public static function getById(int $projectId): ?array {
+    public static function getById(int $projectId): ?array
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -158,7 +162,8 @@ class Project {
      * Retrieves all source files associated with a project.
      * (Previously getProjectFiles, but renamed to be more specific to 'source' files).
      */
-    public static function getProjectSourceFiles(int $projectId): array {
+    public static function getProjectSourceFiles(int $projectId): array
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -193,7 +198,8 @@ class Project {
      * Retrieves all instruments associated with a project.
      * (Existing method, included for context)
      */
-    public static function getProjectInstruments(int $projectId): array {
+    public static function getProjectInstruments(int $projectId): array
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -230,7 +236,8 @@ class Project {
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function update(int $projectId, array $data): bool {
+    public static function update(int $projectId, array $data): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -258,8 +265,10 @@ class Project {
         $currentProjectData = $result->fetch_assoc(); // Fetch the current row data.
         $selectStmt->close();
 
-        if( (isset($data['title']) && $data['title'] === $currentProjectData['title'])
-            ||(isset($data['description']) && $data['description'] && $data['description'] === $currentProjectData['description'])) {
+        if (
+            (isset($data['title']) && $data['title'] === $currentProjectData['title'])
+            || (isset($data['description']) && $data['description'] && $data['description'] === $currentProjectData['description'])
+        ) {
             return true;
         }
 
@@ -312,7 +321,8 @@ class Project {
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function updateInstrument(int $instrumentId, array $data): bool {
+    public static function updateInstrument(int $instrumentId, array $data): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -381,7 +391,8 @@ class Project {
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function addInstrument(int $projectId, array $data): bool {
+    public static function addInstrument(int $projectId, array $data): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -403,7 +414,8 @@ class Project {
             throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
         }
 
-        $stmt->bind_param("issss",
+        $stmt->bind_param(
+            "issss",
             $projectId,
             $data['name'],
             $data['type'],
@@ -425,7 +437,8 @@ class Project {
      * @return bool True on success, false if no rows were affected or on error.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function deleteInstruments(array $instrumentIds): bool {
+    public static function deleteInstruments(array $instrumentIds): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -470,7 +483,8 @@ class Project {
      * @return array An array of file paths.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function getSourceFilePathsByIds(array $fileIds): array {
+    public static function getSourceFilePathsByIds(array $fileIds): array
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -529,7 +543,8 @@ class Project {
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function addSourceFile(int $projectId, string $fileName, string $filePath): bool {
+    public static function addSourceFile(int $projectId, string $fileName, string $filePath): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -560,10 +575,11 @@ class Project {
      * @throws mysqli_sql_exception If a database error occurs.
      * @throws Exception
      */
-    public static function deleteSourceFiles(array $fileIds): bool {
+    public static function deleteSourceFiles(array $fileIds): bool
+    {
         global $conn;
 
-        foreach($fileIds as $fileId) {
+        foreach ($fileIds as $fileId) {
             error_log($fileId);
         }
         if (!$conn instanceof mysqli) {
@@ -605,7 +621,8 @@ class Project {
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function deleteConfigFile(int $projectId): bool {
+    public static function deleteConfigFile(int $projectId): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -636,7 +653,8 @@ class Project {
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
-    public static function updateConfigFile(int $projectId, string $filePath): bool {
+    public static function updateConfigFile(int $projectId, string $filePath): bool
+    {
         global $conn;
 
         if (!$conn instanceof mysqli) {
@@ -659,7 +677,8 @@ class Project {
         }
     }
 
-    public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array {
+    public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array
+    {
         global $conn;
         if (!$conn instanceof mysqli) {
             error_log("MySQLi connection not available in Project::getProjectsByUserIdPaginated.");
@@ -694,7 +713,8 @@ class Project {
         }
     }
 
-    public static function countProjectsByUserId(int $userId): int {
+    public static function countProjectsByUserId(int $userId): int
+    {
         global $conn;
         if (!$conn instanceof mysqli) {
             error_log("MySQLi connection not available in Project::countProjectsByUserId.");

@@ -47,7 +47,7 @@ class ProjectController
 
         // Validate the project ID from the GET request
         if ($projectId && is_numeric($projectId)) {
-            $projectId = (int)$projectId; // Cast to integer for security
+            $projectId = (int) $projectId; // Cast to integer for security
 
             try {
                 // Attempt to retrieve project details from the database
@@ -91,20 +91,47 @@ class ProjectController
                                 } else {
                                     switch ($extension) {
                                         // Common text-based files / code files
-                                        case 'txt': case 'log': case 'md': case 'csv':
-                                        case 'json': case 'xml': case 'html': case 'css': case 'js':
-                                        case 'php': case 'sh': case 'py': case 'yaml': case 'yml':
-                                        case 'ini': case 'conf': case 'env': case 'gitignore': case 'editorconfig':
-                                        $mimeType = 'text/plain'; break; // Treat as plain text for displaying code/configs
+                                        case 'txt':
+                                        case 'log':
+                                        case 'md':
+                                        case 'csv':
+                                        case 'json':
+                                        case 'xml':
+                                        case 'html':
+                                        case 'css':
+                                        case 'js':
+                                        case 'php':
+                                        case 'sh':
+                                        case 'py':
+                                        case 'yaml':
+                                        case 'yml':
+                                        case 'ini':
+                                        case 'conf':
+                                        case 'env':
+                                        case 'gitignore':
+                                        case 'editorconfig':
+                                            $mimeType = 'text/plain';
+                                            break; // Treat as plain text for displaying code/configs
 
                                         // Image files
-                                        case 'jpg': case 'jpeg': $mimeType = 'image/jpeg'; break;
-                                        case 'png': $mimeType = 'image/png'; break;
-                                        case 'gif': $mimeType = 'image/gif'; break;
-                                        case 'svg': $mimeType = 'image/svg+xml'; break;
+                                        case 'jpg':
+                                        case 'jpeg':
+                                            $mimeType = 'image/jpeg';
+                                            break;
+                                        case 'png':
+                                            $mimeType = 'image/png';
+                                            break;
+                                        case 'gif':
+                                            $mimeType = 'image/gif';
+                                            break;
+                                        case 'svg':
+                                            $mimeType = 'image/svg+xml';
+                                            break;
 
                                         // PDF files
-                                        case 'pdf': $mimeType = 'application/pdf'; break;// Fallback for unknown
+                                        case 'pdf':
+                                            $mimeType = 'application/pdf';
+                                            break;// Fallback for unknown
                                     }
                                 }
                             }
@@ -113,10 +140,16 @@ class ProjectController
                             // This array includes common text-like MIME types that mime_content_type might return
                             // but don't strictly start with 'text/' (e.g., application/json)
                             $textMimeTypesForInline = [
-                                'application/json', 'application/xml', 'application/javascript',
-                                'application/x-php', 'image/svg+xml', // SVG is XML-based text
-                                'application/x-python', 'text/x-python', // Specific Python MIME types
-                                'application/x-yaml', 'text/yaml', 'text/x-yaml', // Specific YAML MIME types
+                                'application/json',
+                                'application/xml',
+                                'application/javascript',
+                                'application/x-php',
+                                'image/svg+xml', // SVG is XML-based text
+                                'application/x-python',
+                                'text/x-python', // Specific Python MIME types
+                                'application/x-yaml',
+                                'text/yaml',
+                                'text/x-yaml', // Specific YAML MIME types
                                 'application/x-dockerfile', // Specific Dockerfile MIME type
                                 'text/plain', // Universal text mime type
                                 'text/x-sh', // Shell script MIME type
@@ -179,16 +212,43 @@ class ProjectController
                                     }
                                 } else {
                                     switch ($extension) {
-                                        case 'txt': case 'log': case 'md': case 'csv':
-                                        case 'json': case 'xml': case 'html': case 'css': case 'js':
-                                        case 'php': case 'sh': case 'py': case 'yaml': case 'yml':
-                                        case 'ini': case 'conf': case 'env': case 'gitignore': case 'editorconfig':
-                                        $mimeType = 'text/plain'; break;
-                                        case 'jpg': case 'jpeg': $mimeType = 'image/jpeg'; break;
-                                        case 'png': $mimeType = 'image/png'; break;
-                                        case 'gif': $mimeType = 'image/gif'; break;
-                                        case 'svg': $mimeType = 'image/svg+xml'; break;
-                                        case 'pdf': $mimeType = 'application/pdf'; break;
+                                        case 'txt':
+                                        case 'log':
+                                        case 'md':
+                                        case 'csv':
+                                        case 'json':
+                                        case 'xml':
+                                        case 'html':
+                                        case 'css':
+                                        case 'js':
+                                        case 'php':
+                                        case 'sh':
+                                        case 'py':
+                                        case 'yaml':
+                                        case 'yml':
+                                        case 'ini':
+                                        case 'conf':
+                                        case 'env':
+                                        case 'gitignore':
+                                        case 'editorconfig':
+                                            $mimeType = 'text/plain';
+                                            break;
+                                        case 'jpg':
+                                        case 'jpeg':
+                                            $mimeType = 'image/jpeg';
+                                            break;
+                                        case 'png':
+                                            $mimeType = 'image/png';
+                                            break;
+                                        case 'gif':
+                                            $mimeType = 'image/gif';
+                                            break;
+                                        case 'svg':
+                                            $mimeType = 'image/svg+xml';
+                                            break;
+                                        case 'pdf':
+                                            $mimeType = 'application/pdf';
+                                            break;
                                     }
                                 }
                             }
@@ -261,7 +321,7 @@ class ProjectController
             require_once APP_ROOT . '/app/views/project/projectEdit.php';
             return;
         }
-        $projectId = (int)$projectId;
+        $projectId = (int) $projectId;
         error_log("Edit (Direct): Project ID: " . $projectId);
 
         try {
@@ -320,13 +380,15 @@ class ProjectController
                                     'access' => $submittedInstrumentAccesses[$key] ?? '',
                                 ];
                                 if (!empty($id)) { // Existing instrument (update it)
-                                    $instrumentsToKeep[] = (int)$id;
-                                    $result = Project::updateInstrument((int)$id, $instrumentData);
-                                    if (!$result) throw new Exception("Failed to update instrument ID {$id}.");
+                                    $instrumentsToKeep[] = (int) $id;
+                                    $result = Project::updateInstrument((int) $id, $instrumentData);
+                                    if (!$result)
+                                        throw new Exception("Failed to update instrument ID {$id}.");
                                     error_log("Edit (Direct): Updated instrument ID {$id}: Success");
                                 } else { // New instrument (add it)
                                     $result = Project::addInstrument($projectId, $instrumentData);
-                                    if (!$result) throw new Exception("Failed to add new instrument.");
+                                    if (!$result)
+                                        throw new Exception("Failed to add new instrument.");
                                     error_log("Edit (Direct): Added new instrument: Success");
                                 }
                             }
@@ -335,7 +397,8 @@ class ProjectController
                             $instrumentsToDelete = array_diff($currentInstrumentIds, $instrumentsToKeep);
                             if (!empty($instrumentsToDelete)) {
                                 $result = Project::deleteInstruments($instrumentsToDelete);
-                                if (!$result) throw new Exception("Failed to delete instruments.");
+                                if (!$result)
+                                    throw new Exception("Failed to delete instruments.");
                                 error_log("Edit (Direct): Deleted instruments from DB: " . implode(', ', $instrumentsToDelete) . " -> Success");
                             }
 
@@ -380,7 +443,7 @@ class ProjectController
                                             error_log("Edit (Direct): FAILED to delete previous config file '{$oldConfigFile}' during replacement.");
                                         }
                                     }
-                                    error_log("New config file detected for upload.".$newConfigFilePath);
+                                    error_log("New config file detected for upload." . $newConfigFilePath);
                                     Project::updateConfigFile($projectId, $newConfigFilePath); // Update DB with relative path
                                     error_log("Edit (Direct): Updated config_file path in DB for ID: " . $projectId . " to " . $newConfigFilePath);
                                 } else {
@@ -398,7 +461,7 @@ class ProjectController
                                 $filesToDeleteFromStorage = Project::getSourceFilePathsByIds($deleteSourceFiles);
                                 error_log("Edit (Direct): Actual paths for source file deletion: " . implode(', ', $filesToDeleteFromStorage));
                                 if (!empty($filesToDeleteFromStorage)) {
-                                    foreach($filesToDeleteFromStorage as $filePath) {
+                                    foreach ($filesToDeleteFromStorage as $filePath) {
                                         if (file_exists(APP_ROOT . '/' . $filePath)) {
                                             if (unlink(APP_ROOT . '/' . $filePath)) {
                                                 error_log("Edit (Direct): Deleted source file '{$filePath}' from storage.");
@@ -412,7 +475,8 @@ class ProjectController
                                 }
                                 $dbDeleteSuccess = Project::deleteSourceFiles($deleteSourceFiles);
                                 error_log("Edit (Direct): Deleted source files from DB for ID: " . implode(', ', $deleteSourceFiles));
-                                if (!$dbDeleteSuccess) throw new Exception("Failed to delete source file records from DB.");
+                                if (!$dbDeleteSuccess)
+                                    throw new Exception("Failed to delete source file records from DB.");
                                 error_log("Edit (Direct): Deleted source file records from DB: Success");
                             }
 

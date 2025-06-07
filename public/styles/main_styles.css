@@ -15,7 +15,7 @@ header {
     justify-content: space-between;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
-    box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.08);
 }
 
 header h1 {
@@ -40,7 +40,8 @@ nav a {
     transition: background 0.2s, color 0.2s;
 }
 
-nav a:hover, nav a.active {
+nav a:hover,
+nav a.active {
     background: #6366f1;
     color: #fff;
 }
@@ -58,7 +59,7 @@ nav a:hover, nav a.active {
     border-radius: 50%;
     border: 2px solid #fff;
     object-fit: cover;
-    box-shadow: 0 2px 8px rgba(79,70,229,0.12);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
 }
 
 form input[type="search"] {
@@ -81,7 +82,7 @@ form button:hover {
     background: #3730a3;
 }
 
-section > div > div {
+section>div>div {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -104,10 +105,12 @@ a:hover {
         align-items: flex-start;
         padding: 1rem;
     }
+
     .profile-pic-container {
         margin-left: 0;
         margin-top: 1rem;
     }
+
     nav {
         gap: 0.5rem;
         flex-wrap: wrap;

@@ -9,6 +9,7 @@
 </form>
 <p>Don't have an account? <a href="/register">Register</a></p>
 
-<?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
+<?php if (!empty($error))
+    echo "<p style='color:red;'>$error</p>"; ?>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

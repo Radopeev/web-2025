@@ -13,72 +13,84 @@ $existingSourceFiles = $existingSourceFiles ?? []; // Array of {name, path} for 
 $existingInstruments = $existingInstruments ?? []; // Array of existing instruments
 ?>
 
-    <form action="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" method="POST" enctype="multipart/form-data">
-        <h2><?php echo $project['id'] ? 'Edit Project: ' . htmlspecialchars($project['title']) : 'Create New Project'; ?></h2>
+<form action="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" method="POST"
+    enctype="multipart/form-data">
+    <h2><?php echo $project['id'] ? 'Edit Project: ' . htmlspecialchars($project['title']) : 'Create New Project'; ?>
+    </h2>
 
-        <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
+    <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
 
-        <input type="text" name="title" placeholder="Project Title" value="<?php echo htmlspecialchars($project['title']); ?>" required><br>
-        <textarea name="description" placeholder="Project Description"><?php echo htmlspecialchars($project['description']); ?></textarea><br>
+    <input type="text" name="title" placeholder="Project Title"
+        value="<?php echo htmlspecialchars($project['title']); ?>" required><br>
+    <textarea name="description"
+        placeholder="Project Description"><?php echo htmlspecialchars($project['description']); ?></textarea><br>
 
-        <label>Source Files:</label>
-        <div id="file-inputs-container">
-            <input type="file" name="new_source_files[]" multiple onchange="updateFileList()">
-        </div>
-        <button type="button" onclick="addFileInput()">Add Another File Input</button>
-        <ul id="selected-files-list"></ul>
+    <label>Source Files:</label>
+    <div id="file-inputs-container">
+        <input type="file" name="new_source_files[]" multiple onchange="updateFileList()">
+    </div>
+    <button type="button" onclick="addFileInput()">Add Another File Input</button>
+    <ul id="selected-files-list"></ul>
 
-        <h4>Existing Source Files:</h4>
-        <ul id="existing-files-list">
-            <?php if (!empty($existingSourceFiles)): ?>
-                <?php foreach ($existingSourceFiles as $file): ?>
-                    <li>
-                        <?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?>
-                        <label>
-                            <input type="checkbox" name="delete_source_files[]" value="<?php echo htmlspecialchars($file['id'] ?? $file['path']); ?>">
-                        </label> Delete
-                        <input type="hidden" name="existing_source_file_ids[]" value="<?php echo htmlspecialchars($file['id'] ?? $file['path']); ?>">
-                    </li>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <li>No existing source files.</li>
-            <?php endif; ?>
-        </ul>
-
-        <label>Configuration File:</label>
-        <?php if ($project['config_file']): ?>
-            <p>Current Config: <?php echo htmlspecialchars(basename($project['config_file'])); ?>
-                <input type="checkbox" name="delete_config_file" value="1"> Delete Current
-            </p>
+    <h4>Existing Source Files:</h4>
+    <ul id="existing-files-list">
+        <?php if (!empty($existingSourceFiles)): ?>
+            <?php foreach ($existingSourceFiles as $file): ?>
+                <li>
+                    <?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?>
+                    <label>
+                        <input type="checkbox" name="delete_source_files[]"
+                            value="<?php echo htmlspecialchars($file['id'] ?? $file['path']); ?>">
+                    </label> Delete
+                    <input type="hidden" name="existing_source_file_ids[]"
+                        value="<?php echo htmlspecialchars($file['id'] ?? $file['path']); ?>">
+                </li>
+            <?php endforeach; ?>
         <?php else: ?>
-            <p>No configuration file uploaded.</p>
+            <li>No existing source files.</li>
         <?php endif; ?>
-        <input type="file" name="config_file"><br> <h3>Instruments</h3>
-        <div id="instruments-container">
-            <?php if (!empty($existingInstruments)): ?>
-                <?php foreach ($existingInstruments as $index => $instrument): ?>
-                    <div class="instrument" data-instrument-id="<?php echo htmlspecialchars($instrument['id'] ?? $index); ?>">
-                        <input type="hidden" name="instrument_id[]" value="<?php echo htmlspecialchars($instrument['id'] ?? ''); ?>">
-                        <input type="text" name="instrument_name[]" placeholder="Name" value="<?php echo htmlspecialchars($instrument['name']); ?>">
-                        <input type="text" name="instrument_type[]" placeholder="Type" value="<?php echo htmlspecialchars($instrument['type']); ?>">
-                        <input type="text" name="instrument_description[]" placeholder="Description" value="<?php echo htmlspecialchars($instrument['description']); ?>">
-                        <input type="url" name="instrument_access[]" placeholder="Access URL" value="<?php echo htmlspecialchars($instrument['access']); ?>">
-                        <button type="button" onclick="removeInstrument(this)">Remove</button>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-        <button type="button" onclick="addInstrument()">Add Instrument</button><br>
+    </ul>
 
-        <input type="submit" value="Save Changes">
-    </form>
+    <label>Configuration File:</label>
+    <?php if ($project['config_file']): ?>
+        <p>Current Config: <?php echo htmlspecialchars(basename($project['config_file'])); ?>
+            <input type="checkbox" name="delete_config_file" value="1"> Delete Current
+        </p>
+    <?php else: ?>
+        <p>No configuration file uploaded.</p>
+    <?php endif; ?>
+    <input type="file" name="config_file"><br>
+    <h3>Instruments</h3>
+    <div id="instruments-container">
+        <?php if (!empty($existingInstruments)): ?>
+            <?php foreach ($existingInstruments as $index => $instrument): ?>
+                <div class="instrument" data-instrument-id="<?php echo htmlspecialchars($instrument['id'] ?? $index); ?>">
+                    <input type="hidden" name="instrument_id[]"
+                        value="<?php echo htmlspecialchars($instrument['id'] ?? ''); ?>">
+                    <input type="text" name="instrument_name[]" placeholder="Name"
+                        value="<?php echo htmlspecialchars($instrument['name']); ?>">
+                    <input type="text" name="instrument_type[]" placeholder="Type"
+                        value="<?php echo htmlspecialchars($instrument['type']); ?>">
+                    <input type="text" name="instrument_description[]" placeholder="Description"
+                        value="<?php echo htmlspecialchars($instrument['description']); ?>">
+                    <input type="url" name="instrument_access[]" placeholder="Access URL"
+                        value="<?php echo htmlspecialchars($instrument['access']); ?>">
+                    <button type="button" onclick="removeInstrument(this)">Remove</button>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+    <button type="button" onclick="addInstrument()">Add Instrument</button><br>
 
-    <script>
-        // --- JavaScript for Instruments ---
-        function addInstrument(name = '', type = '', description = '', access = '') {
-            const container = document.getElementById('instruments-container');
-            const instrumentHTML = `
+    <input type="submit" value="Save Changes">
+</form>
+
+<script>
+    // --- JavaScript for Instruments ---
+    function addInstrument(name = '', type = '', description = '', access = '') {
+        const container = document.getElementById('instruments-container');
+        const instrumentHTML = `
     <div class="instrument">
         <input type="hidden" name="instrument_id[]" value=""> <input type="text" name="instrument_name[]" placeholder="Name" value="${name}">
         <input type="text" name="instrument_type[]" placeholder="Type" value="${type}">
@@ -86,66 +98,66 @@ $existingInstruments = $existingInstruments ?? []; // Array of existing instrume
         <input type="url" name="instrument_access[]" placeholder="Access URL" value="${access}">
         <button type="button" onclick="removeInstrument(this)">Remove</button>
     </div>`;
-            container.insertAdjacentHTML('beforeend', instrumentHTML);
-        }
+        container.insertAdjacentHTML('beforeend', instrumentHTML);
+    }
 
-        function removeInstrument(button) {
-            button.closest('.instrument').remove();
-        }
+    function removeInstrument(button) {
+        button.closest('.instrument').remove();
+    }
 
-        // --- JavaScript for Source Files ---
-        function addFileInput() {
-            const container = document.getElementById('file-inputs-container');
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.name = 'new_source_files[]'; // Name changed to distinguish from existing files
-            input.multiple = true;
-            input.onchange = updateFileList;
-            container.appendChild(input);
+    // --- JavaScript for Source Files ---
+    function addFileInput() {
+        const container = document.getElementById('file-inputs-container');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'new_source_files[]'; // Name changed to distinguish from existing files
+        input.multiple = true;
+        input.onchange = updateFileList;
+        container.appendChild(input);
 
-            // Add a visual indicator or a "remove" button for this new input field if desired
-            // For simplicity, just adding the input here.
-        }
+        // Add a visual indicator or a "remove" button for this new input field if desired
+        // For simplicity, just adding the input here.
+    }
 
-        function updateFileList() {
-            // This function now tracks *newly selected files* from the dynamic inputs.
-            // It does not track existing files from the database.
-            const inputs = document.querySelectorAll('input[type="file"][name="new_source_files[]"]');
-            const list = document.getElementById('selected-files-list');
-            list.innerHTML = ''; // Clear previous list
-            inputs.forEach(input => {
-                if (input.files.length > 0) {
-                    for (const file of input.files) {
-                        const li = document.createElement('li');
-                        li.textContent = file.name;
-                        list.appendChild(li);
-                    }
+    function updateFileList() {
+        // This function now tracks *newly selected files* from the dynamic inputs.
+        // It does not track existing files from the database.
+        const inputs = document.querySelectorAll('input[type="file"][name="new_source_files[]"]');
+        const list = document.getElementById('selected-files-list');
+        list.innerHTML = ''; // Clear previous list
+        inputs.forEach(input => {
+            if (input.files.length > 0) {
+                for (const file of input.files) {
+                    const li = document.createElement('li');
+                    li.textContent = file.name;
+                    list.appendChild(li);
                 }
-            });
-        }
-
-        // Attach updateFileList to the initial input only if it exists (for new project creation)
-        // For edit page, it's safer to ensure this input is present and attach
-        const initialFileInput = document.querySelector('input[type="file"][name="new_source_files[]"]');
-        if (initialFileInput) {
-            initialFileInput.onchange = updateFileList;
-        }
-
-        // --- Initialize the form with existing data when editing ---
-        // If you pre-fill instruments dynamically, you might not need this.
-        // If the PHP loop already generates the initial instruments, this is fine.
-        // Example of how you *would* programmatically add them if not done by PHP:
-        /*
-        document.addEventListener('DOMContentLoaded', () => {
-            // Assuming `existingInstruments` is a JS array if loaded from PHP
-            // This part is likely not needed if PHP already renders them.
-            // if (typeof existingInstruments !== 'undefined' && existingInstruments.length > 0) {
-            //     existingInstruments.forEach(instrument => {
-            //         addInstrument(instrument.name, instrument.type, instrument.description, instrument.access);
-            //     });
-            // }
+            }
         });
-        */
-    </script>
+    }
+
+    // Attach updateFileList to the initial input only if it exists (for new project creation)
+    // For edit page, it's safer to ensure this input is present and attach
+    const initialFileInput = document.querySelector('input[type="file"][name="new_source_files[]"]');
+    if (initialFileInput) {
+        initialFileInput.onchange = updateFileList;
+    }
+
+    // --- Initialize the form with existing data when editing ---
+    // If you pre-fill instruments dynamically, you might not need this.
+    // If the PHP loop already generates the initial instruments, this is fine.
+    // Example of how you *would* programmatically add them if not done by PHP:
+    /*
+    document.addEventListener('DOMContentLoaded', () => {
+        // Assuming `existingInstruments` is a JS array if loaded from PHP
+        // This part is likely not needed if PHP already renders them.
+        // if (typeof existingInstruments !== 'undefined' && existingInstruments.length > 0) {
+        //     existingInstruments.forEach(instrument => {
+        //         addInstrument(instrument.name, instrument.type, instrument.description, instrument.access);
+        //     });
+        // }
+    });
+    */
+</script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>
