@@ -10,31 +10,32 @@ if (!isset($username)) {
     <meta charset="UTF-8">
     <title>Your App Name</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/styles.css">
+    <link rel="stylesheet" href="/public/styles/main_styles.css">
 </head>
 <body>
     <header>
-        <h1>Your App Name</h1>
+        <div style="display: flex; align-items: center;">
+            <h1>Your App Name</h1>
+            <?php if (!empty($_SESSION['user_id'])): ?>
+                <?php
+                $user = User::findById($_SESSION['user_id']);
+                if (!empty($user['profile_picture'])): ?>
+                    <div class="profile-pic-container">
+                        <img src="/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture">
+                        <span style="color: #e0e7ff; font-weight: 500;"><?php echo htmlspecialchars($username); ?></span>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
         <nav>
-            <a href="/landingPage">Home</a>
+            <a href="/landingPage" class="<?php echo ($_SERVER['REQUEST_URI'] === '/landingPage') ? 'active' : ''; ?>">Home</a>
             <?php if (!empty($username) && $username !== 'Guest'): ?>
-                <a href="/upload">Upload Project</a>
-                <a href="/profile">My Profile</a>
-                <a href="/logout" style="float:right; margin-left:20px;">Logout</a>
+                <a href="/upload" class="<?php echo ($_SERVER['REQUEST_URI'] === '/upload') ? 'active' : ''; ?>">Upload Project</a>
+                <a href="/profile" class="<?php echo ($_SERVER['REQUEST_URI'] === '/profile') ? 'active' : ''; ?>">My Profile</a>
+                <a href="/logout" style="margin-left:20px;">Logout</a>
             <?php else: ?>
-                <a href="/login">Login</a>
-                <a href="/register">Register</a>
+                <a href="/login" class="<?php echo ($_SERVER['REQUEST_URI'] === '/login') ? 'active' : ''; ?>">Login</a>
+                <a href="/register" class="<?php echo ($_SERVER['REQUEST_URI'] === '/register') ? 'active' : ''; ?>">Register</a>
             <?php endif; ?>
         </nav>
-        <hr>
     </header>
-
-    <?php if (!empty($_SESSION['user_id'])): ?>
-        <?php
-        $user = User::findById($_SESSION['user_id']);
-        if (!empty($user['profile_picture'])): ?>
-            <div style="float: right; margin-right: 20px;">
-                <img src="/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Профилна снимка" style="width: 100px; height: 100px; border-radius: 50%;">
-            </div>
-        <?php endif; ?>
-    <?php endif; ?>

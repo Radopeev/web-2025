@@ -1,0 +1,128 @@
+.main-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-section h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-desc {
+    color: #6366f1;
+    font-size: 1.1rem;
+}
+
+.search-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.search-btn {
+    padding: 0.6rem 1.2rem;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background: #3730a3;
+}
+
+.projects-section h2 {
+    margin-bottom: 1.5rem;
+    color: #3730a3;
+    font-size: 1.4rem;
+}
+
+.no-projects {
+    text-align: center;
+    color: #64748b;
+    margin-top: 2rem;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.06);
+    padding: 1.2rem 1rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    transition: box-shadow 0.2s;
+}
+
+.project-card:hover {
+    box-shadow: 0 4px 16px rgba(79,70,229,0.13);
+}
+
+.project-info h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.15rem;
+    color: #4f46e5;
+}
+
+.project-info p {
+    margin: 0;
+    color: #334155;
+    font-size: 0.98rem;
+}
+
+.project-info mark {
+    background: #fef08a;
+    color: #b45309;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.project-actions {
+    margin-top: 1rem;
+    text-align: right;
+}
+
+.details-link {
+    color: #4f46e5;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.98rem;
+    transition: color 0.2s;
+}
+
+.details-link:hover {
+    color: #3730a3;
+    text-decoration: underline;
+}

@@ -1,0 +1,87 @@
+.upload-main {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(79,70,229,0.07);
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.upload-form label {
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    color: #4f46e5;
+}
+
+.upload-form input[type="text"],
+.upload-form input[type="url"],
+.upload-form input[type="file"],
+.upload-form textarea {
+    padding: 0.6rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.upload-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.add-instrument-btn {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background 0.2s;
+}
+
+.add-instrument-btn:hover {
+    background: #3730a3;
+}
+
+.instrument {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.instrument input {
+    flex: 1 1 120px;
+}
+
+.submit-btn {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background: #3730a3;
+}
+
+#selected-files-list {
+    list-style: disc inside;
+    color: #64748b;
+    margin: 0 0 0.5rem 0.5rem;
+    font-size: 0.98rem;
+}
