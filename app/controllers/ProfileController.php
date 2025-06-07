@@ -130,12 +130,27 @@ class ProfileController
             $fileName = uniqid() . '_' . basename($_FILES['profile_picture']['name']);
             $targetFile = $targetDir . $fileName;
 
+            global $conn;
+
+            // Fetch the current profile picture path
+            $stmt = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $currentProfilePicture = $result->fetch_assoc()['profile_picture'];
+            $stmt->close();
+
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
-                global $conn;
+                // Update the database with the new profile picture path
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
                 $stmt->bind_param("si", $targetFile, $userId);
                 $stmt->execute();
                 $stmt->close();
+
+                // Delete the old profile picture if it exists
+                if (!empty($currentProfilePicture) && file_exists($currentProfilePicture)) {
+                    unlink($currentProfilePicture);
+                }
 
                 header('Location: /profile');
                 exit;
