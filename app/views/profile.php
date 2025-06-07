@@ -1,6 +1,7 @@
 <?php include __DIR__ . '/partials/header.php'; ?> 
  
 <?php 
+if (!isset($projects)) $projects = [];
 if (!isset($page)) $page = 1; 
 if (!isset($totalPages)) $totalPages = 1; 
 ?> 
