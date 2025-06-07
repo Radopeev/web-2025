@@ -1,6 +1,7 @@
 <?php include __DIR__ . '/partials/header.php'; ?>
 
 <?php
+if (!isset($projects)) $projects = [];
 if (!isset($page)) $page = 1;
 if (!isset($totalPages)) $totalPages = 1;
 ?>
@@ -13,22 +14,32 @@ if (!isset($totalPages)) $totalPages = 1;
         <div class="profile-info">
             <p><strong>Username:</strong> <?php echo htmlspecialchars($username ?? ''); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($email ?? ''); ?></p>
-            <p><strong>Registration Date:</strong> <?php echo htmlspecialchars($created_at ?? 'Unknown'); ?></p>
         </div>
         <button class="edit-profile-btn" onclick="openEditProfileModal()">Edit Profile</button>
     </section>
 
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
-            <form action="/update_profile" method="POST">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+            <form action="/update_profile" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+                </div>
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+                </div>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="New Password">
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" placeholder="New Password">
+                </div>
+
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture:</label>
+                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+                </div>
 
                 <div class="modal-actions">
                     <button type="submit" class="save-btn">Save Changes</button>
@@ -40,8 +51,17 @@ if (!isset($totalPages)) $totalPages = 1;
 
     <section class="projects-section">
         <h3>My Projects</h3>
+        <?php
+        $projectsPerPage = 5; // Number of projects per page
+        $totalProjects = count($projects); // Total number of projects
+        $totalPages = ceil($totalProjects / $projectsPerPage); // Calculate total pages
+
+        $startIndex = ($page - 1) * $projectsPerPage;
+        $projectsToShow = array_slice($projects, $startIndex, $projectsPerPage); // Slice projects for current page
+        ?>
+
         <ul class="projects-list">
-            <?php foreach ($projects as $project): ?>
+            <?php foreach ($projectsToShow as $project): ?>
                 <li class="project-item">
                     <div>
                         <span class="project-title"><?php echo htmlspecialchars($project['title']); ?></span>
@@ -54,6 +74,7 @@ if (!isset($totalPages)) $totalPages = 1;
                 </li>
             <?php endforeach; ?>
         </ul>
+
         <div class="pagination">
             <?php if ($page > 1): ?>
                 <a href="/profile?page=<?php echo $page - 1; ?>" class="pagination-btn">Previous</a>
@@ -62,14 +83,6 @@ if (!isset($totalPages)) $totalPages = 1;
                 <a href="/profile?page=<?php echo $page + 1; ?>" class="pagination-btn">Next</a>
             <?php endif; ?>
         </div>
-    </section>
-
-    <section class="profile-picture-section">
-        <form action="/upload_profile_picture" method="POST" enctype="multipart/form-data" class="profile-picture-form">
-            <label for="profile_picture">Upload Profile Picture:</label>
-            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" required>
-            <button type="submit" class="upload-btn">Upload</button>
-        </form>
     </section>
 </main>
 
