@@ -16,6 +16,12 @@ function require_auth() {
     }
 }
 
+// Serve static files directly if they exist
+$path = __DIR__ . '/../' . $_SERVER['REQUEST_URI'];
+if (php_sapi_name() === 'cli-server' && is_file($path)) {
+    return false;
+}
+
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 switch ($request) {
@@ -32,11 +38,6 @@ switch ($request) {
     case '/landingPage':
         // A: We should allow access to the landing page for all users, including guests.
         // ... I recommend forcing authentication only for details pages or upload page.
-
-        // if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        //     header('Location: /login');
-        //     exit;
-        // }
 
         LandingPageController::showLandingPage();
         break;
