@@ -151,6 +151,29 @@ class Project {
         }
     }
 
+    public static function getAllProjectsForUser($userId): array {
+        global $conn;
+
+        $projects = [];
+
+        $stmt = $conn->prepare("SELECT * FROM projects WHERE user_id = ?");
+        if ($stmt === false) {
+            return $projects;
+        }
+
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $projects[] = $row;
+        }
+
+        $stmt->close();
+
+        return $projects;
+    }
+
     /**
      * Retrieves a single project's details by its ID.
      * Renamed from getProjectDetails to getById for clarity and consistency.
