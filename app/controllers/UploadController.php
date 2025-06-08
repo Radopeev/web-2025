@@ -46,23 +46,19 @@ class UploadController
             }
         }
 
-        // Process directory files and preserve directory structure  
+        // Process directory files and flatten structure
         if (!empty($_FILES['directory_files']['tmp_name'])) {
             $uploadDir = 'public/uploads/sources/';
-            $uniqueFolder = uniqid() . '_folder/';
             foreach ($_FILES['directory_files']['tmp_name'] as $index => $tmpName) {
                 if ($tmpName) {
-                    $relativePath = $_FILES['directory_files']['name'][$index];
-                    $destinationPath = $uploadDir . $uniqueFolder . uniqid() . '_' . $relativePath;
-                    $destinationDir = dirname($destinationPath);
-                    if (!is_dir($destinationDir)) {
-                        mkdir($destinationDir, 0777, true);
-                    }
+                    $originalName = basename($_FILES['directory_files']['name'][$index]);
+                    $uniqueName = uniqid() . '_' . $originalName;
+                    $destinationPath = $uploadDir . $uniqueName;
                     move_uploaded_file($tmpName, $destinationPath);
 
                     // Assign to variables before bind_param  
                     $dbDestinationPath = $destinationPath;
-                    $dbOriginalName = basename($relativePath);
+                    $dbOriginalName = $originalName;
                     $stmt = $conn->prepare("INSERT INTO files (project_id, file_path, original_name) VALUES (?, ?, ?)");
                     $stmt->bind_param("iss", $project_id, $dbDestinationPath, $dbOriginalName);
                     $stmt->execute();
