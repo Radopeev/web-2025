@@ -828,4 +828,19 @@ class Project {
         $stmt->close();
         return $projects;
     }
+
+    public static function searchProjects($query) {
+        global $conn;
+        $projects = [];
+        $like = '%' . $query . '%';
+        $stmt = $conn->prepare("SELECT * FROM projects WHERE title LIKE ? OR description LIKE ? ORDER BY created_at DESC");
+        $stmt->bind_param("ss", $like, $like);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $projects[] = $row;
+        }
+        $stmt->close();
+        return $projects;
+    }
 }
