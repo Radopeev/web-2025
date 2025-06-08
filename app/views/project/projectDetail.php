@@ -35,7 +35,7 @@
                         <?php
                         $configFileName = basename($project['config_file']);
                         $parts = explode('_', $configFileName, 2);
-                        $displayConfigFileName = (count($parts) > 1 && str_starts_with($parts[0], 'config')) ? $parts[1] : $configFileName;
+                        $displayConfigFileName = $parts[1];
 
                         $configIsViewableInline = $project['config_is_viewable_inline'] ?? false;
                         $configViewType = $project['config_view_type'] ?? '';
