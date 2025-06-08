@@ -27,7 +27,7 @@ class ProfileController
         $totalProjects = Project::countProjectsByUserId($userId);
         $totalPages = ceil($totalProjects / $projectsPerPage);
 
-        $projects = Project::getAllProjects($userId);
+        $projects = Project::getAllProjectsForUser($userId);
 
 
         include APP_ROOT . 'app/views/profile.php';
