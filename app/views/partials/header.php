@@ -24,8 +24,8 @@ if (!isset($username)) {
                 error_log(print_r($user, true)); // Debugging line
                 if (!empty($user['profile_picture'])): ?>
                     <div class="profile-pic-container">
-                        <img src="/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture">
-                        <span style="color: #e0e7ff; font-weight: 500;"><?php echo htmlspecialchars($username); ?></span>
+                        <img src="/<?php echo htmlspecialchars($user['profile_picture']);?>" alt="Profile Picture">
+                        <span style="color: #e0e7ff; font-weight: 500;"><?php echo htmlspecialchars($username);error_log($username) ?></span>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

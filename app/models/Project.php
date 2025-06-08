@@ -3,9 +3,35 @@
 // Assume $conn is globally available and a mysqli instance
 // For production, consider dependency injection instead of global $conn
 
-class Project
-{
+class Project {
+    /**
+     * Retrieves all projects from the database.
+     * This method fetches all projects without pagination or search.
+     *
+     * @return array An array of project records, each as an associative array.
+     */
+    public static function getAllProjects(): array {
+        global $conn;
 
+        if (!$conn instanceof mysqli) {
+            error_log("MySQLi connection not available in Project::getAllProjects.");
+            return [];
+        }
+
+        try {
+            $result = $conn->query("SELECT id, user_id, title, description, config_file, created_at FROM projects ORDER BY created_at DESC");
+
+            if ($result) {
+                return $result->fetch_all(MYSQLI_ASSOC);
+            } else {
+                error_log("Error executing query in getAllProjects: " . $conn->error);
+                return [];
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching all projects: " . $e->getMessage());
+            return [];
+        }
+    }
     /**
      * Retrieves a paginated list of projects, with optional search capabilities.
      * (Existing method, included for context)

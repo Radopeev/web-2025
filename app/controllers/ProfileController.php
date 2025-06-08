@@ -5,6 +5,8 @@ require_once APP_ROOT . 'app/models/Project.php';
 
 class ProfileController
 {
+    
+
     public static function showProfile()
     {
         $userId = $_SESSION['user_id'];
@@ -25,7 +27,7 @@ class ProfileController
         $totalProjects = Project::countProjectsByUserId($userId);
         $totalPages = ceil($totalProjects / $projectsPerPage);
 
-        $projects = Project::getProjectsByUserId($userId);
+        $projects = Project::getAllProjects($userId);
 
 
         include APP_ROOT . 'app/views/profile.php';
@@ -57,6 +59,9 @@ class ProfileController
             $stmt->close();
         }
 
+        if (!empty($username)) {
+            $_SESSION['username'] = $username;
+        }
         if (!empty($_FILES['profile_picture']['tmp_name'])) {
             $targetDir = 'public/uploads/profile_pictures/';
             if (!is_dir($targetDir)) {
