@@ -144,12 +144,14 @@ class ProfileController
         $stmt->execute();
         $stmt->close();
 
-        // Then delete the project
+        // Delete instruments first
+        $stmt = $conn->prepare("DELETE FROM instruments WHERE project_id = ?");
+        $stmt->bind_param("i", $projectId);
+        $stmt->execute();
+        $stmt->close();
+
+        // Now delete the project
         $stmt = $conn->prepare("DELETE FROM projects WHERE id = ?");
-        if (!$stmt) {
-            error_log("Failed to prepare statement for deleting project.");
-            return;
-        }
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
