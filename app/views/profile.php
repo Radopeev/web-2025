@@ -64,7 +64,9 @@ if (!isset($totalPages)) $totalPages = 1;
             <?php foreach ($projectsToShow as $project): ?>
                 <li class="project-item">
                     <div>
-                        <span class="project-title"><?php echo htmlspecialchars($project['title']); ?></span>
+                        <a class="project-title" href="/project/details?id=<?php echo htmlspecialchars($project['id']); ?>">
+                            <?php echo htmlspecialchars($project['title']); ?>
+                        </a>
                         <span class="project-desc"><?php echo htmlspecialchars($project['description']); ?></span>
                     </div>
                     <form action="/delete_project" method="POST" class="delete-form">
