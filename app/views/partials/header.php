@@ -9,15 +9,16 @@ if (!isset($username)) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Your App Name</title>
+    <title>ProjectHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/public/styles/main_styles.css">
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
 </head>
 
 <body>
     <header>
         <div style="display: flex; align-items: center;">
-            <h1>Your App Name</h1>
+            <h1>ProjectHub</h1>
             <?php if (!empty($_SESSION['user_id'])): ?>
                 <?php
                 $user = User::findById($_SESSION['user_id']);
