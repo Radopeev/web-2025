@@ -36,7 +36,6 @@ class UploadController
                 $filePath = 'public/uploads/sources/' . $uniqueName;
                 move_uploaded_file($tmpName, $filePath);
 
-                // Assign to variables before bind_param  
                 $dbFilePath = $filePath;
                 $dbOriginalName = $originalName;
                 $stmt = $conn->prepare("INSERT INTO files (project_id, file_path, original_name) VALUES (?, ?, ?)");
@@ -46,7 +45,6 @@ class UploadController
             }
         }
 
-        // Process directory files and flatten structure
         if (!empty($_FILES['directory_files']['tmp_name'])) {
             $uploadDir = 'public/uploads/sources/';
             foreach ($_FILES['directory_files']['tmp_name'] as $index => $tmpName) {
@@ -56,7 +54,6 @@ class UploadController
                     $destinationPath = $uploadDir . $uniqueName;
                     move_uploaded_file($tmpName, $destinationPath);
 
-                    // Assign to variables before bind_param  
                     $dbDestinationPath = $destinationPath;
                     $dbOriginalName = $originalName;
                     $stmt = $conn->prepare("INSERT INTO files (project_id, file_path, original_name) VALUES (?, ?, ?)");

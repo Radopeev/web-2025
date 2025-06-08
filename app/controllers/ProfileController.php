@@ -5,8 +5,6 @@ require_once APP_ROOT . 'app/models/Project.php';
 
 class ProfileController
 {
-    
-
     public static function showProfile()
     {
         $userId = $_SESSION['user_id'];
@@ -70,7 +68,6 @@ class ProfileController
             $fileName = uniqid() . '_' . basename($_FILES['profile_picture']['name']);
             $targetFile = $targetDir . $fileName;
 
-            // Fetch the current profile picture path
             $stmt = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
             $stmt->bind_param("i", $userId);
             $stmt->execute();
@@ -80,14 +77,11 @@ class ProfileController
 
 
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
-                // Update the database with the new profile picture path
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
                 $stmt->bind_param("si", $targetFile, $userId);
                 $stmt->execute();
                 $stmt->close();
 
-
-                // Delete the old profile picture if it exists
                 if (!empty($currentProfilePicture) && file_exists($currentProfilePicture)) {
                     unlink($currentProfilePicture);
                 }
@@ -105,7 +99,6 @@ class ProfileController
 
         global $conn;
 
-        // Fetch associated files for the project
         $stmt = $conn->prepare("SELECT file_path FROM files WHERE project_id = ?");
         if (!$stmt) {
             error_log("Failed to prepare statement for fetching files.");
@@ -125,7 +118,6 @@ class ProfileController
                 unlink($filePath);
                 error_log("File deleted: " . $filePath);
 
-                // Extract the directory path from the file path
                 $directoryPath = dirname($filePath);
                 if (!in_array($directoryPath, $directoriesToDelete)) {
                     $directoriesToDelete[] = $directoryPath;
@@ -134,7 +126,6 @@ class ProfileController
         }
         $stmt->close();
 
-        // Delete associated files from the database
         $stmt = $conn->prepare("DELETE FROM files WHERE project_id = ?");
         if (!$stmt) {
             error_log("Failed to prepare statement for deleting files.");
@@ -144,21 +135,18 @@ class ProfileController
         $stmt->execute();
         $stmt->close();
 
-        // Delete instruments first
         $stmt = $conn->prepare("DELETE FROM instruments WHERE project_id = ?");
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
 
-        // Now delete the project
         $stmt = $conn->prepare("DELETE FROM projects WHERE id = ?");
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
 
-        // Delete directories if they are empty
         foreach ($directoriesToDelete as $directoryPath) {
-            if (is_dir($directoryPath) && count(scandir($directoryPath)) == 2) { // Only '.' and '..' remain
+            if (is_dir($directoryPath) && count(scandir($directoryPath)) == 2) {
                 if (rmdir($directoryPath)) {
                     error_log("Directory deleted: " . $directoryPath);
                 } else {
@@ -191,7 +179,6 @@ class ProfileController
 
             global $conn;
 
-            // Fetch the current profile picture path
             $stmt = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
             $stmt->bind_param("i", $userId);
             $stmt->execute();
@@ -200,7 +187,6 @@ class ProfileController
             $stmt->close();
 
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
-                // Update the database with the new profile picture path
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
                 $stmt->bind_param("si", $targetFile, $userId);
                 $stmt->execute();
@@ -209,7 +195,6 @@ class ProfileController
                 error_log("Profile picture uploaded successfully: " . $targetFile);
                 error_log("Current profile picture: " . $currentProfilePicture);
 
-                // Delete the old profile picture if it exists
                 if (!empty($currentProfilePicture) && file_exists($currentProfilePicture)) {
                     error_log("Current profile picture: " . $currentProfilePicture);
                     unlink($currentProfilePicture);

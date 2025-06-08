@@ -22,7 +22,7 @@ if (!isset($username)) {
             <?php if (!empty($_SESSION['user_id'])): ?>
                 <?php
                 $user = User::findById($_SESSION['user_id']);
-                error_log(print_r($user, true)); // Debugging line
+                error_log(print_r($user, true));
                 if (!empty($user['profile_picture'])): ?>
                     <div class="profile-pic-container">
                         <img src="/<?php echo htmlspecialchars($user['profile_picture']);?>" alt="Profile Picture">

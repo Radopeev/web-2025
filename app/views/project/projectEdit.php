@@ -90,7 +90,6 @@
 </main>
 
 <script>
-    // --- JavaScript for Instruments ---
     function addInstrument(name = '', type = '', description = '', access_link = '') {
         const container = document.getElementById('instruments-container');
         const instrumentHTML = `
@@ -108,26 +107,20 @@
         button.closest('.instrument').remove();
     }
 
-    // --- JavaScript for Source Files ---
     function addFileInput() {
         const container = document.getElementById('file-inputs-container');
         const input = document.createElement('input');
         input.type = 'file';
-        input.name = 'new_source_files[]'; // Name changed to distinguish from existing files
+        input.name = 'new_source_files[]';
         input.multiple = true;
         input.onchange = updateFileList;
         container.appendChild(input);
-
-        // Add a visual indicator or a "remove" button for this new input field if desired
-        // For simplicity, just adding the input here.
     }
 
     function updateFileList() {
-        // This function now tracks *newly selected files* from the dynamic inputs.
-        // It does not track existing files from the database.
         const inputs = document.querySelectorAll('input[type="file"][name="new_source_files[]"]');
         const list = document.getElementById('selected-files-list');
-        list.innerHTML = ''; // Clear previous list
+        list.innerHTML = '';
         inputs.forEach(input => {
             if (input.files.length > 0) {
                 for (const file of input.files) {
@@ -139,28 +132,10 @@
         });
     }
 
-    // Attach updateFileList to the initial input only if it exists (for new project creation)
-    // For edit page, it's safer to ensure this input is present and attach
     const initialFileInput = document.querySelector('input[type="file"][name="new_source_files[]"]');
     if (initialFileInput) {
         initialFileInput.onchange = updateFileList;
     }
-
-    // --- Initialize the form with existing data when editing ---
-    // If you pre-fill instruments dynamically, you might not need this.
-    // If the PHP loop already generates the initial instruments, this is fine.
-    // Example of how you *would* programmatically add them if not done by PHP:
-    /*
-    document.addEventListener('DOMContentLoaded', () => {
-        // Assuming `existingInstruments` is a JS array if loaded from PHP
-        // This part is likely not needed if PHP already renders them.
-        // if (typeof existingInstruments !== 'undefined' && existingInstruments.length > 0) {
-        //     existingInstruments.forEach(instrument => {
-        //         addInstrument(instrument.name, instrument.type, instrument.description, instrument.access_link);
-        //     });
-        // }
-    });
-    */
 </script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

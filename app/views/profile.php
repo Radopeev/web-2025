@@ -52,12 +52,12 @@ if (!isset($totalPages)) $totalPages = 1;
     <section class="projects-section">
         <h3>My Projects</h3>
         <?php
-        $projectsPerPage = 5; // Number of projects per page
-        $totalProjects = count($projects); // Total number of projects
-        $totalPages = ceil($totalProjects / $projectsPerPage); // Calculate total pages
+        $projectsPerPage = 5;
+        $totalProjects = count($projects);
+        $totalPages = ceil($totalProjects / $projectsPerPage);
 
         $startIndex = ($page - 1) * $projectsPerPage;
-        $projectsToShow = array_slice($projects, $startIndex, $projectsPerPage); // Slice projects for current page
+        $projectsToShow = array_slice($projects, $startIndex, $projectsPerPage);
         ?>
 
         <ul class="projects-list">

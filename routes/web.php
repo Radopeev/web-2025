@@ -18,7 +18,6 @@ function require_auth()
     }
 }
 
-// Serve static files directly if they exist
 $path = __DIR__ . '/../' . $_SERVER['REQUEST_URI'];
 if (php_sapi_name() === 'cli-server' && is_file($path)) {
     return false;

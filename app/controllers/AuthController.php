@@ -36,7 +36,7 @@ class AuthController
         include __DIR__ . '/../views/auth/login.php';
     }
 
-    public static function register()
+    public static function register(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'];

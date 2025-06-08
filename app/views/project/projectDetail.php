@@ -1,10 +1,3 @@
-<?php
-// app/Views/project_details.php
-// Variables expected to be set by the Controller:
-// $project, $projectFiles, $projectInstruments, $errorMessage, $configBasePath, $sourceBasePath
-// $selectedFileContent, $selectedFileName, $selectedFileMimeType
-?>
-
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
 <link rel="stylesheet" href="/public/styles/main_styles.css">
@@ -79,7 +72,7 @@
             <hr>
 
             <div class="project-files-card">
-                <h2 class="section-title">Associated Files</h2>
+                <h2 class="section-title">Source Files</h2>
                 <?php if (!is_array($projectFiles)) $projectFiles = []; ?>
                 <?php if (empty($projectFiles)): ?>
                     <p>No files associated with this project.</p>

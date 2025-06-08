@@ -1,11 +1,11 @@
-<?php  
-require_once APP_ROOT . 'app/models/Project.php'; // Ensure Project model is included  
+<?php
+
+require_once APP_ROOT . 'app/models/Project.php';
  
 class LandingPageController {  
     public static function showLandingPage(): void
     {
-        // No need to instantiate Project anymore, call static methods directly 
-        $username = $_SESSION['username'] ?? 'Guest';  
+        $username = $_SESSION['username'] ?? 'Guest';
         $searchQuery = $_GET['search'] ?? ''; 
   
         if (!empty($searchQuery)) {   

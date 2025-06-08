@@ -24,11 +24,10 @@ class User
             $stmt->close();
             return true;
         } catch (mysqli_sql_exception $e) {
-            // Duplicate entry error code is 1062  
             if ($e->getCode() == 1062) {
                 return false;
             }
-            throw $e; // rethrow other exceptions  
+            throw $e;
         }
     }
 
