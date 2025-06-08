@@ -88,13 +88,6 @@ if (!isset($totalPages)) $totalPages = 1;
     </section>
 </main>
 
-<script>
-function openEditProfileModal() {
-    document.getElementById('editProfileModal').style.display = 'flex';
-}
-function closeEditProfileModal() {
-    document.getElementById('editProfileModal').style.display = 'none';
-}
-</script>
+<script src="/public/js/profile_scripts.js"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
