@@ -329,35 +329,70 @@ class Project
             throw new Exception("Database connection not available.");
         }
 
+        // 1. Fetch current data for comparison
+        $currentDataSql = "SELECT name, type, description, access_link FROM instruments WHERE id = ?";
+        $stmtCurrent = $conn->prepare($currentDataSql);
+
+        if ($stmtCurrent === false) {
+            throw new mysqli_sql_exception("Failed to prepare current data fetch statement: " . $conn->error);
+        }
+
+        $stmtCurrent->bind_param('i', $instrumentId);
+        $stmtCurrent->execute();
+        $result = $stmtCurrent->get_result();
+        $currentInstrument = $result->fetch_assoc();
+        $stmtCurrent->close();
+
+        // If no instrument found with the given ID, we can't update it.
+        // Decide how to handle this: return false, or throw an exception.
+        if (!$currentInstrument) {
+            // Option 1: Return false if the instrument doesn't exist
+            return false;
+            // Option 2: Throw an exception if an invalid instrumentId is passed
+            // throw new Exception("Instrument with ID $instrumentId not found.");
+        }
+
         $setParts = [];
         $params = [];
         $types = '';
+        $hasChanges = false; // Flag to track if any actual changes are detected
 
-        if (isset($data['name'])) {
+        // 2. Compare incoming data with current data and build update parts
+        if (isset($data['name']) && $data['name'] !== $currentInstrument['name']) {
             $setParts[] = "name = ?";
             $params[] = $data['name'];
             $types .= 's';
+            $hasChanges = true;
         }
-        if (isset($data['type'])) {
+        if (isset($data['type']) && $data['type'] !== $currentInstrument['type']) {
             $setParts[] = "type = ?";
             $params[] = $data['type'];
             $types .= 's';
+            $hasChanges = true;
         }
-        if (isset($data['description'])) {
+        if (isset($data['description']) && $data['description'] !== $currentInstrument['description']) {
             $setParts[] = "description = ?";
             $params[] = $data['description'];
             $types .= 's';
+            $hasChanges = true;
         }
-        if (isset($data['access'])) {
-            $setParts[] = "access = ?";
-            $params[] = $data['access'];
+        if (isset($data['access_link']) && $data['access_link'] !== $currentInstrument['access_link']) {
+            $setParts[] = "access_link = ?";
+            $params[] = $data['access_link'];
             $types .= 's';
+            $hasChanges = true;
         }
 
-        if (empty($setParts)) {
-            return false; // Nothing to update
+        if(!$hasChanges) {
+            return true;
         }
 
+        // If no fields are provided in $data OR if all provided fields have the same values
+        if (empty($setParts)) { // This condition now also covers the "same values" case
+            return false; // Nothing to update or no actual changes detected
+        }
+
+        // If we reach here, it means there are actual changes to be made
         $sql = "UPDATE instruments SET " . implode(', ', $setParts) . " WHERE id = ?";
         $stmt = $conn->prepare($sql);
 
@@ -368,6 +403,7 @@ class Project
         $params[] = $instrumentId; // Add instrumentId to parameters
         $types .= 'i'; // Add type for instrumentId
 
+        // Use call_user_func_array for bind_param with dynamic arguments
         $bindArgs = [];
         $bindArgs[] = &$types;
         for ($i = 0; $i < count($params); $i++) {
@@ -376,18 +412,21 @@ class Project
         call_user_func_array([$stmt, 'bind_param'], $bindArgs);
 
         if ($stmt->execute()) {
+            // Return true if affected_rows > 0 (meaning something was actually changed in the DB)
+            // Note: Even if affected_rows is 0 here, it means we ran an update,
+            // but the DB decided nothing changed. The `hasChanges` flag above is
+            // better for preventing the query entirely if values are the same.
             return $stmt->affected_rows > 0;
         } else {
             throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
         }
     }
-
     /**
      * Adds a new instrument record to the database for a specific project.
      * Changed signature to accept an array of data.
      *
      * @param int $projectId The ID of the project to associate with.
-     * @param array $data An associative array of instrument data (name, type, description, access).
+     * @param array $data An associative array of instrument data (name, type, description, access_link).
      * @return bool True on success, false on failure.
      * @throws mysqli_sql_exception If a database error occurs.
      */
@@ -400,14 +439,14 @@ class Project
         }
 
         // Ensure all required fields are present in $data for insertion
-        $requiredFields = ['name', 'type', 'description', 'access'];
+        $requiredFields = ['name', 'type', 'description', 'access_link'];
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
                 throw new InvalidArgumentException("Missing required instrument field: " . $field);
             }
         }
 
-        $sql = "INSERT INTO instruments (project_id, name, type, description, access) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO instruments (project_id, name, type, description, access_link) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
         if ($stmt === false) {
@@ -420,7 +459,7 @@ class Project
             $data['name'],
             $data['type'],
             $data['description'],
-            $data['access']
+            $data['access_link']
         );
 
         if ($stmt->execute()) {

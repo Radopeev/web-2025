@@ -38,9 +38,6 @@ switch ($request) {
         AuthController::logout();
         break;
     case '/landingPage':
-        // A: We should allow access to the landing page for all users, including guests.
-        // ... I recommend forcing authentication only for details pages or upload page.
-
         LandingPageController::showLandingPage();
         break;
     case '/upload':

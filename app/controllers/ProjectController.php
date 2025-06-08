@@ -377,8 +377,9 @@ class ProjectController
                                     'name' => $submittedInstrumentNames[$key] ?? '',
                                     'type' => $submittedInstrumentTypes[$key] ?? '',
                                     'description' => $submittedInstrumentDescriptions[$key] ?? '',
-                                    'access' => $submittedInstrumentAccesses[$key] ?? '',
+                                    'access_link' => $submittedInstrumentAccesses[$key] ?? '',
                                 ];
+                                error_log("Edit (Direct): Current Instruments in a loop: " . print_r($instrumentData, true));
                                 if (!empty($id)) { // Existing instrument (update it)
                                     $instrumentsToKeep[] = (int) $id;
                                     $result = Project::updateInstrument((int) $id, $instrumentData);

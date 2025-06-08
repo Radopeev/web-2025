@@ -77,7 +77,7 @@
                     <input type="text" name="instrument_description[]" placeholder="Description"
                         value="<?php echo htmlspecialchars($instrument['description']); ?>">
                     <input type="url" name="instrument_access[]" placeholder="Access URL"
-                        value="<?php echo htmlspecialchars($instrument['access']); ?>">
+                        value="<?php echo htmlspecialchars($instrument['access_link']); ?>">
                     <button type="button" onclick="removeInstrument(this)">Remove</button>
                 </div>
             <?php endforeach; ?>
@@ -91,14 +91,14 @@
 
 <script>
     // --- JavaScript for Instruments ---
-    function addInstrument(name = '', type = '', description = '', access = '') {
+    function addInstrument(name = '', type = '', description = '', access_link = '') {
         const container = document.getElementById('instruments-container');
         const instrumentHTML = `
     <div class="instrument">
         <input type="hidden" name="instrument_id[]" value=""> <input type="text" name="instrument_name[]" placeholder="Name" value="${name}">
         <input type="text" name="instrument_type[]" placeholder="Type" value="${type}">
         <input type="text" name="instrument_description[]" placeholder="Description" value="${description}">
-        <input type="url" name="instrument_access[]" placeholder="Access URL" value="${access}">
+        <input type="url" name="instrument_access[]" placeholder="Access URL" value="${access_link}">
         <button type="button" onclick="removeInstrument(this)">Remove</button>
     </div>`;
         container.insertAdjacentHTML('beforeend', instrumentHTML);
@@ -156,7 +156,7 @@
         // This part is likely not needed if PHP already renders them.
         // if (typeof existingInstruments !== 'undefined' && existingInstruments.length > 0) {
         //     existingInstruments.forEach(instrument => {
-        //         addInstrument(instrument.name, instrument.type, instrument.description, instrument.access);
+        //         addInstrument(instrument.name, instrument.type, instrument.description, instrument.access_link);
         //     });
         // }
     });
