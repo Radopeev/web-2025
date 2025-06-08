@@ -526,41 +526,6 @@ class Project {
         }
     }
 
-    public static function getProjectsByUserIdPaginated(int $userId, int $limit, int $offset): array
-    {
-        global $conn;
-        if (!$conn instanceof mysqli) {
-            error_log("MySQLi connection not available in Project::getProjectsByUserIdPaginated.");
-            return [];
-        }
-
-        try {
-            $sql = "SELECT id, title, description FROM projects WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) {
-                error_log("Error preparing statement in getProjectsByUserIdPaginated: " . $conn->error);
-                return [];
-            }
-
-            $stmt->bind_param('iii', $userId, $limit, $offset);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result) {
-                return $result->fetch_all(MYSQLI_ASSOC);
-            } else {
-                error_log("Error getting result in getProjectsByUserIdPaginated: " . $stmt->error);
-                return [];
-            }
-        } catch (Exception $e) {
-            error_log("Error fetching paginated projects: " . $e->getMessage());
-            return [];
-        } finally {
-            if (isset($stmt) && $stmt) {
-                $stmt->close();
-            }
-        }
-    }
 
     public static function countProjectsByUserId(int $userId): int
     {
@@ -599,21 +564,8 @@ class Project {
         }
     }
 
-    public static function getProjectsByUserId($userId) {
-        global $conn;
-        $projects = [];
-        $stmt = $conn->prepare("SELECT * FROM projects WHERE user_id = ? ORDER BY created_at DESC");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-            $projects[] = $row;
-        }
-        $stmt->close();
-        return $projects;
-    }
-
-    public static function searchProjects($query) {
+    public static function searchProjects($query): array
+    {
         global $conn;
         $projects = [];
         $like = '%' . $query . '%';
