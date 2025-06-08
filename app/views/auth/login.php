@@ -1,15 +1,18 @@
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
-<h2>Login</h2>
+<link rel="stylesheet" href="/public/styles/auth_styles.css">
 
-<form method="POST">
-    <input type="email" name="email" placeholder="Email" required /><br>
-    <input type="password" name="password" placeholder="Password" required /><br>
-    <button type="submit">Login</button>
-</form>
-<p>Don't have an account? <a href="/register">Register</a></p>
-
-<?php if (!empty($error))
-    echo "<p style='color:red;'>$error</p>"; ?>
+<div class="auth-container">
+    <h2>Login</h2>
+    <form method="POST">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="/register">Register</a></p>
+    <?php if (!empty($error)): ?>
+        <div class="error"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+</div>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>
