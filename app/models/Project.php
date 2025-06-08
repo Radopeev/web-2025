@@ -315,10 +315,10 @@ class Project {
         $selectStmt->close();
 
         if (
-            (isset($data['title']) && $data['title'] === $currentProjectData['title'])
-            || (isset($data['description']) && $data['description'] && $data['description'] === $currentProjectData['description'])
+            (!isset($data['title']) || $data['title'] === $currentProjectData['title']) &&
+            (!isset($data['description']) || $data['description'] === $currentProjectData['description'])
         ) {
-            return true;
+            return true; // Nothing to update
         }
 
         if (isset($data['title'])) {
