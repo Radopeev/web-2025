@@ -79,7 +79,7 @@ if (!isset($searchQuery)) {
                             </p>
                         </div>
                         <div class="project-actions">
-                            <a href="/project_details?id=<?php echo htmlspecialchars($project['id']); ?>" class="details-link">
+                            <a href="/project/details?id=<?php echo htmlspecialchars($project['id']); ?>" class="details-link">
                                 View Details &rarr;
                             </a>
                         </div>

@@ -55,9 +55,11 @@ switch ($request) {
         }
         break;
     case '/project/details':
+        require_auth();
         ProjectController::showProjectDetails();
         break;
     case '/project/edit':
+        require_auth();
         ProjectController::editProject();
         break;
     case '/profile':

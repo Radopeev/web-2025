@@ -1,36 +1,34 @@
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
-<?php
-// Defensive checks: Ensure these variables are set,
-// assuming they are passed from your controller.
-$project = $project ?? [
-    'id' => null,
-    'title' => '',
-    'description' => '',
-    'config_file' => null, // Path to existing config file
-];
-$existingSourceFiles = $existingSourceFiles ?? []; // Array of {name, path} for source files
-$existingInstruments = $existingInstruments ?? []; // Array of existing instruments
-?>
+<link rel="stylesheet" href="/public/styles/project_edit_styles.css">
 
+<main class="project-edit-main">
 <form action="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" method="POST"
-    enctype="multipart/form-data">
-    <h2><?php echo $project['id'] ? 'Edit Project: ' . htmlspecialchars($project['title']) : 'Create New Project'; ?>
+    enctype="multipart/form-data" class="project-edit-form">
+    <h2>
+        <?php if ($project['id']): ?>
+            Edit Project: <span class="project-title-name"><?php echo htmlspecialchars($project['title']); ?></span>
+        <?php else: ?>
+            Create New Project
+        <?php endif; ?>
     </h2>
 
     <input type="hidden" name="_method" value="PUT">
     <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
 
-    <input type="text" name="title" placeholder="Project Title"
-        value="<?php echo htmlspecialchars($project['title']); ?>" required><br>
-    <textarea name="description"
-        placeholder="Project Description"><?php echo htmlspecialchars($project['description']); ?></textarea><br>
+    <label for="title">Project Title:</label>
+    <input type="text" id="title" name="title" placeholder="Project Title"
+        value="<?php echo htmlspecialchars($project['title']); ?>" required>
+
+    <label for="description">Project Description:</label>
+    <textarea id="description" name="description"
+        placeholder="Project Description"><?php echo htmlspecialchars($project['description']); ?></textarea>
 
     <label>Source Files:</label>
     <div id="file-inputs-container">
         <input type="file" name="new_source_files[]" multiple onchange="updateFileList()">
     </div>
-    <button type="button" onclick="addFileInput()">Add Another File Input</button>
+    <button type="button" class="add-file-btn" onclick="addFileInput()">Add Another File Input</button>
     <ul id="selected-files-list"></ul>
 
     <h4>Existing Source Files:</h4>
@@ -38,11 +36,15 @@ $existingInstruments = $existingInstruments ?? []; // Array of existing instrume
         <?php if (!empty($existingSourceFiles)): ?>
             <?php foreach ($existingSourceFiles as $file): ?>
                 <li>
-                    <?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?>
+                    <span class="file-name"><?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?></span>
+                    <?php if (!empty($file['path'])): ?>
+                        <span>(<a href="<?php echo htmlspecialchars($file['path']); ?>" download="<?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?>">Download</a>)</span>
+                    <?php endif; ?>
                     <label>
                         <input type="checkbox" name="delete_source_files[]"
                             value="<?php echo htmlspecialchars($file['id'] ?? $file['path']); ?>">
-                    </label> Delete
+                        Delete
+                    </label>
                     <input type="hidden" name="existing_source_file_ids[]"
                         value="<?php echo htmlspecialchars($file['id'] ?? $file['path']); ?>">
                 </li>
@@ -81,10 +83,11 @@ $existingInstruments = $existingInstruments ?? []; // Array of existing instrume
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
-    <button type="button" onclick="addInstrument()">Add Instrument</button><br>
+    <button type="button" class="add-instrument-btn" onclick="addInstrument()">Add Instrument</button><br>
 
     <input type="submit" value="Save Changes">
 </form>
+</main>
 
 <script>
     // --- JavaScript for Instruments ---

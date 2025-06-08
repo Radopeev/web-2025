@@ -749,4 +749,30 @@ class Project
             }
         }
     }
+
+    public static function getAllProjects() {
+        global $conn;
+        $projects = [];
+        $result = $conn->query("SELECT * FROM projects ORDER BY created_at DESC");
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $projects[] = $row;
+            }
+        }
+        return $projects;
+    }
+
+    public static function getProjectsByUserId($userId) {
+        global $conn;
+        $projects = [];
+        $stmt = $conn->prepare("SELECT * FROM projects WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $projects[] = $row;
+        }
+        $stmt->close();
+        return $projects;
+    }
 }

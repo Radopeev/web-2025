@@ -18,9 +18,16 @@ class ProfileController
         $username = $user['username'];
         $email = $user['email'];
 
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $projectsPerPage = 5;
+        $offset = ($page - 1) * $projectsPerPage;
+
+        $totalProjects = Project::countProjectsByUserId($userId);
+        $totalPages = ceil($totalProjects / $projectsPerPage);
+
         $projects = Project::getProjectsByUserId($userId);
 
-        // Include the profile view  
+
         include APP_ROOT . 'app/views/profile.php';
     }
 
@@ -50,6 +57,40 @@ class ProfileController
             $stmt->close();
         }
 
+        if (!empty($_FILES['profile_picture']['tmp_name'])) {
+            $targetDir = 'public/uploads/profile_pictures/';
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+            $fileName = uniqid() . '_' . basename($_FILES['profile_picture']['name']);
+            $targetFile = $targetDir . $fileName;
+
+            // Fetch the current profile picture path
+            $stmt = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $currentProfilePicture = $result->fetch_assoc()['profile_picture'];
+            $stmt->close();
+
+
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
+                // Update the database with the new profile picture path
+                $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
+                $stmt->bind_param("si", $targetFile, $userId);
+                $stmt->execute();
+                $stmt->close();
+
+
+                // Delete the old profile picture if it exists
+                if (!empty($currentProfilePicture) && file_exists($currentProfilePicture)) {
+                    unlink($currentProfilePicture);
+                }
+            } else {
+                echo "Error uploading profile picture.";
+            }
+        }
+
         header('Location: /profile');
     }
 
@@ -59,76 +100,67 @@ class ProfileController
 
         global $conn;
 
-        // Fetch associated files for the project 
+        // Fetch associated files for the project
         $stmt = $conn->prepare("SELECT file_path FROM files WHERE project_id = ?");
         if (!$stmt) {
+            error_log("Failed to prepare statement for fetching files.");
             return;
         }
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $result = $stmt->get_result();
+
+        $directoriesToDelete = [];
 
         while ($row = $result->fetch_assoc()) {
             $filePath = $row['file_path'];
-            $absolutePathSources = realpath('public/uploads/sources/' . $filePath);
-            $absolutePathConfigs = realpath('public/uploads/configs/' . $filePath);
+            error_log("Deleting file: " . $filePath);
 
-            if ($absolutePathSources && file_exists($absolutePathSources)) {
-                unlink($absolutePathSources);
-            }
+            if ($filePath && file_exists($filePath)) {
+                unlink($filePath);
+                error_log("File deleted: " . $filePath);
 
-            if ($absolutePathConfigs && file_exists($absolutePathConfigs)) {
-                unlink($absolutePathConfigs);
+                // Extract the directory path from the file path
+                $directoryPath = dirname($filePath);
+                if (!in_array($directoryPath, $directoriesToDelete)) {
+                    $directoriesToDelete[] = $directoryPath;
+                }
             }
         }
         $stmt->close();
 
-        // Delete associated files from the database  
+        // Delete associated files from the database
         $stmt = $conn->prepare("DELETE FROM files WHERE project_id = ?");
         if (!$stmt) {
+            error_log("Failed to prepare statement for deleting files.");
             return;
         }
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
 
-        // Then delete the project  
+        // Then delete the project
         $stmt = $conn->prepare("DELETE FROM projects WHERE id = ?");
         if (!$stmt) {
+            error_log("Failed to prepare statement for deleting project.");
             return;
         }
         $stmt->bind_param("i", $projectId);
         $stmt->execute();
         $stmt->close();
 
-        header('Location: /profile');
-    }
-
-    public static function getProjectStatistics($userId)
-    {
-        global $conn;
-
-        $stats = [
-            'active' => 0,
-            'in_progress' => 0,
-            'completed' => 0
-        ];
-
-        $stmt = $conn->prepare("SELECT status, COUNT(*) as count FROM projects WHERE user_id = ? GROUP BY status");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-            $status = strtolower($row['status']);
-            if (isset($stats[$status])) {
-                $stats[$status] = $row['count'];
+        // Delete directories if they are empty
+        foreach ($directoriesToDelete as $directoryPath) {
+            if (is_dir($directoryPath) && count(scandir($directoryPath)) == 2) { // Only '.' and '..' remain
+                if (rmdir($directoryPath)) {
+                    error_log("Directory deleted: " . $directoryPath);
+                } else {
+                    error_log("Failed to delete directory: " . $directoryPath);
+                }
             }
         }
 
-        $stmt->close();
-
-        return $stats;
+        header('Location: /profile');
     }
 
     public static function uploadProfilePicture()
@@ -147,11 +179,12 @@ class ProfileController
             }
 
             $fileName = uniqid() . '_' . basename($_FILES['profile_picture']['name']);
+            error_log("Uploading profile picture: " . $fileName);
             $targetFile = $targetDir . $fileName;
 
             global $conn;
 
-            // Fetch the current profile picture path 
+            // Fetch the current profile picture path
             $stmt = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
             $stmt->bind_param("i", $userId);
             $stmt->execute();
@@ -160,14 +193,18 @@ class ProfileController
             $stmt->close();
 
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
-                // Update the database with the new profile picture path  
+                // Update the database with the new profile picture path
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
                 $stmt->bind_param("si", $targetFile, $userId);
                 $stmt->execute();
                 $stmt->close();
 
-                // Delete the old profile picture if it exists 
+                error_log("Profile picture uploaded successfully: " . $targetFile);
+                error_log("Current profile picture: " . $currentProfilePicture);
+
+                // Delete the old profile picture if it exists
                 if (!empty($currentProfilePicture) && file_exists($currentProfilePicture)) {
+                    error_log("Current profile picture: " . $currentProfilePicture);
                     unlink($currentProfilePicture);
                 }
 
