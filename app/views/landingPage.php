@@ -88,11 +88,10 @@ if (!isset($searchQuery)) {
                                 </a>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-    </section>
-</main>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    </main>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
