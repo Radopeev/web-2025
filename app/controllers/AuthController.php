@@ -5,6 +5,15 @@ session_start();
 
 class AuthController
 {
+    private static function loginUser($user)
+    {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['logged_in'] = true;
+        header('Location: /landingPage');
+        exit;
+    }
+
     public static function login()
     {
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
@@ -18,11 +27,7 @@ class AuthController
 
             $user = User::findByEmail($email);
             if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['logged_in'] = true;
-                header('Location: /landingPage');
-                exit;
+                self::loginUser($user);
             } else {
                 $error = "Invalid credentials.";
             }
@@ -39,8 +44,10 @@ class AuthController
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
             if (User::create($username, $email, $password)) {
-                header('Location: /landingPage');
-                exit;
+                $user = User::findByEmail($email);
+                if ($user) {
+                    self::loginUser($user);
+                }
             } else {
                 $error = "Registration failed: Email is already in use.";
             }
