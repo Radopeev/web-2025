@@ -815,18 +815,6 @@ class Project {
         }
     }
 
-    public static function getAllProjects() {
-        global $conn;
-        $projects = [];
-        $result = $conn->query("SELECT * FROM projects ORDER BY created_at DESC");
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $projects[] = $row;
-            }
-        }
-        return $projects;
-    }
-
     public static function getProjectsByUserId($userId) {
         global $conn;
         $projects = [];
