@@ -9,7 +9,8 @@ services:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./sql_script.txt:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./sql_script.txt:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./sql_data.txt:/docker-entrypoint-initdb.d/02_data.sql:ro
 
   php:
     build: .

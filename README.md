@@ -12,6 +12,7 @@
 
 2. You need to have mysql server with `dbname='project_manager'`, `host='localhost'`, `username='root'` and `password='root'` (At some stage a Docker file should replace this step).
    - run the script in `sql_script.txt` to initialize the databse
+   - run the script in `sql_data.txt` to initialize the data in the database
 
 <br>
 
