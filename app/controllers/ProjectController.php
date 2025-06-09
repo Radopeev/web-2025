@@ -77,6 +77,13 @@ class ProjectController
         $projectId = (int) $projectId;
         error_log("Project ID: " . $projectId);
 
+        // Owner check: Only allow project owner to edit
+        $project = Project::getById($projectId);
+        if (!$project || !isset($_SESSION['user_id']) || $_SESSION['user_id'] != $project['user_id']) {
+            header('Location: /landingPage');
+            exit;
+        }
+
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("Handling POST request for Project ID: " . $projectId);

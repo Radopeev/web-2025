@@ -56,6 +56,7 @@ switch ($request) {
         break;
     case '/project/edit':
         require_auth();
+        // Only allow project owner to access edit (move logic to controller)
         ProjectController::editProject();
         break;
     case '/profile':

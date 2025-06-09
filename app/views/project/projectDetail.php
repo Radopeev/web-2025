@@ -37,7 +37,9 @@
             <div class="project-info-card">
                 <h2 class="section-title">
                     Project Information
-                    <a href="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" class="edit-project-btn">Edit Project</a>
+                    <?php if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == $project['user_id']): ?>
+                        <a href="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" class="edit-project-btn">Edit Project</a>
+                    <?php endif; ?>
                 </h2>
                 <p><strong>Description:</strong> <?php echo htmlspecialchars($project['description']); ?></p>
                 <p><strong>Created At:</strong> <?php echo htmlspecialchars(date('F j, Y, g:i a', strtotime($project['created_at']))); ?></p>
