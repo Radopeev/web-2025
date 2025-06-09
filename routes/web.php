@@ -74,6 +74,18 @@ switch ($request) {
         require_auth();
         ProfileController::uploadProfilePicture();
         break;
+    case '/project/star':
+        require_auth();
+        ProjectController::starProject();
+        break;
+    case '/project/unstar':
+        require_auth();
+        ProjectController::unstarProject();
+        break;
+    case '/favorites':
+        require_auth();
+        ProjectController::showFavorites();
+        break;
     default:
         http_response_code(404);
         echo "Page not found";

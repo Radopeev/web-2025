@@ -11,8 +11,8 @@ if (!isset($searchQuery)) {
 ?>
 
 <?php include __DIR__ . '/partials/header.php'; ?>
-<main>
-    <link rel="stylesheet" href="/public/styles/landing_page_styles.css">
+
+<link rel="stylesheet" href="/public/styles/landing_page_styles.css">
 
     <main class="main-container">
         <section class="welcome-section">
@@ -86,6 +86,15 @@ if (!isset($searchQuery)) {
                                 <a href="/project/details?id=<?php echo htmlspecialchars($project['id']); ?>" class="details-link">
                                     View Details &rarr;
                                 </a>
+                                <?php
+                                $isFavorited = isset($_SESSION['user_id']) ? Project::isFavorited($_SESSION['user_id'], $project['id']) : false;
+                                ?>
+                                <form action="/project/<?php echo $isFavorited ? 'unstar' : 'star'; ?>" method="POST" style="display:inline;">
+                                    <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
+                                    <button type="submit" class="star-btn" title="<?php echo $isFavorited ? 'Remove from favorites' : 'Add to favorites'; ?>">
+                                        <?php echo $isFavorited ? '★' : '☆'; ?>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>

@@ -103,6 +103,32 @@ class ProjectController
         error_log("--- Ending editProject controller ---");
     }
 
+    public static function starProject() {
+        $userId = $_SESSION['user_id'];
+        $projectId = $_POST['project_id'] ?? null;
+        if ($projectId) {
+            Project::addFavorite($userId, $projectId);
+        }
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
+    }
+
+    public static function unstarProject() {
+        $userId = $_SESSION['user_id'];
+        $projectId = $_POST['project_id'] ?? null;
+        if ($projectId) {
+            Project::removeFavorite($userId, $projectId);
+        }
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
+    }
+
+    public static function showFavorites() {
+        $userId = $_SESSION['user_id'];
+        $projects = Project::getFavoritesByUser($userId);
+        include __DIR__ . '/../views/favorites.php';
+    }
+
     private static function validateUploadDirectories(): bool
     {
         if (!UPLOAD_CONFIGS_DIR || !is_dir(UPLOAD_CONFIGS_DIR)) {

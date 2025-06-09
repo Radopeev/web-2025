@@ -39,6 +39,7 @@ if (!isset($username)) {
                     Project</a>
                 <a href="/profile" class="<?php echo ($_SERVER['REQUEST_URI'] === '/profile') ? 'active' : ''; ?>">My
                     Profile</a>
+                <a href="/favorites" class="<?php echo ($_SERVER['REQUEST_URI'] === '/favorites') ? 'active' : ''; ?>">Favorites</a>
                 <a href="/logout" style="margin-left:20px;">Logout</a>
             <?php else: ?>
                 <a href="/login" class="<?php echo ($_SERVER['REQUEST_URI'] === '/login') ? 'active' : ''; ?>">Login</a>

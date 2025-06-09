@@ -579,4 +579,45 @@ class Project {
         $stmt->close();
         return $projects;
     }
+
+    public static function isFavorited($userId, $projectId) {
+        global $conn;
+        $stmt = $conn->prepare("SELECT 1 FROM favorites WHERE user_id = ? AND project_id = ?");
+        $stmt->bind_param("ii", $userId, $projectId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $favorited = $result->num_rows > 0;
+        $stmt->close();
+        return $favorited;
+    }
+
+    public static function addFavorite($userId, $projectId) {
+        global $conn;
+        $stmt = $conn->prepare("INSERT IGNORE INTO favorites (user_id, project_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $userId, $projectId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public static function removeFavorite($userId, $projectId) {
+        global $conn;
+        $stmt = $conn->prepare("DELETE FROM favorites WHERE user_id = ? AND project_id = ?");
+        $stmt->bind_param("ii", $userId, $projectId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public static function getFavoritesByUser($userId) {
+        global $conn;
+        $stmt = $conn->prepare("SELECT p.* FROM projects p JOIN favorites f ON p.id = f.project_id WHERE f.user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $projects = [];
+        while ($row = $result->fetch_assoc()) {
+            $projects[] = $row;
+        }
+        $stmt->close();
+        return $projects;
+    }
 }

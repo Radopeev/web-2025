@@ -1,0 +1,51 @@
+.favorites-main {
+    max-width: 700px;
+    margin: 2.5rem auto;
+    padding: 2rem 2.5rem;
+    background: #f8fafc;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(55,48,163,0.10);
+    border: 1.5px solid #e0e7ff;
+}
+
+.favorites-main h2 {
+    color: #2563eb;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.projects-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.projects-list li {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1.1rem;
+    padding: 1rem 1.3rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    transition: box-shadow 0.2s;
+}
+
+.projects-list li:hover {
+    box-shadow: 0 2px 12px rgba(37,99,235,0.08);
+}
+
+.projects-list a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.projects-list a:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
