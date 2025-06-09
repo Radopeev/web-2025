@@ -49,3 +49,22 @@
     color: #1e40af;
     text-decoration: underline;
 }
+
+.add-favorites-btn {
+    display: inline-block;
+    margin: 1.5rem auto 0 auto;
+    padding: 0.6rem 1.3rem;
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.add-favorites-btn:hover {
+    background: #3730a3;
+}
