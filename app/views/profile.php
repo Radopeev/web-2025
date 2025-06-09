@@ -61,20 +61,24 @@ if (!isset($totalPages)) $totalPages = 1;
         ?>
 
         <ul class="projects-list">
-            <?php foreach ($projectsToShow as $project): ?>
-                <li class="project-item">
-                    <div>
-                        <a class="project-title" href="/project/details?id=<?php echo htmlspecialchars($project['id']); ?>">
-                            <?php echo htmlspecialchars($project['title']); ?>
-                        </a>
-                        <span class="project-desc"><?php echo htmlspecialchars($project['description']); ?></span>
-                    </div>
-                    <form action="/delete_project" method="POST" class="delete-form">
-                        <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
-                        <button type="submit" class="delete-btn">Delete</button>
-                    </form>
-                </li>
-            <?php endforeach; ?>
+            <?php if (empty($projectsToShow)): ?>
+                <li class="no-projects-message">You have no projects yet. <a href="/upload">Create your first project</a>!</li>
+            <?php else: ?>
+                <?php foreach ($projectsToShow as $project): ?>
+                    <li class="project-item">
+                        <div>
+                            <a class="project-title" href="/project/details?id=<?php echo htmlspecialchars($project['id']); ?>">
+                                <?php echo htmlspecialchars($project['title']); ?>
+                            </a>
+                            <span class="project-desc"><?php echo htmlspecialchars($project['description']); ?></span>
+                        </div>
+                        <form action="/delete_project" method="POST" class="delete-form">
+                            <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </li>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </ul>
 
         <div class="pagination">
