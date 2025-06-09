@@ -65,18 +65,27 @@
     gap: 0.5rem;
 }
 
-.add-file-btn {
+.add-file-btn,
+.add-instrument-btn {
     background: #6366f1;
     color: #fff;
     border: none;
     border-radius: 6px;
     padding: 0.4rem 1rem;
     font-weight: 500;
+    font-size: 1rem;
     cursor: pointer;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     transition: background 0.2s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 250px;
 }
-.add-file-btn:hover {
+
+.add-file-btn:hover,
+.add-instrument-btn:hover {
     background: #3730a3;
 }
 
