@@ -1,10 +1,6 @@
-<?php
-require_once dirname(__DIR__, 2) . '/config/global.php';
-global $PATHS;
-include __DIR__ . '/partials/header.php';
-?>
+<?php include __DIR__ . '/partials/header.php'; ?>
 
-<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/upload_page_styles.css">
+<link rel="stylesheet" href="/public/styles/upload_page_styles.css">
 
 <main class="upload-main">
     <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
@@ -34,6 +30,6 @@ include __DIR__ . '/partials/header.php';
     </form>
 </main>
 
-<script src="<?= $PATHS['url_root'] ?? '/' ?>public/js/upload_scripts.js"></script>
+<script src="/public/js/upload_scripts.js"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

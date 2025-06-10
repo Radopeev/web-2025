@@ -1,10 +1,6 @@
-<?php
-require_once __DIR__ . '/../../../config/global.php';
-global $PATHS;
-include __DIR__ . '/../partials/header.php';
-?>
+<?php include __DIR__ . '/../partials/header.php'; ?>
 
-<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/project_edit_styles.css">
+<link rel="stylesheet" href="/public/styles/project_edit_styles.css">
 
 <main class="project-edit-main">
 <form action="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" method="POST"
@@ -42,10 +38,7 @@ include __DIR__ . '/../partials/header.php';
                 <li>
                     <span class="file-name"><?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?></span>
                     <?php if (!empty($file['path'])): ?>
-                        <span>(
-                            <a href="<?php echo htmlspecialchars(($PATHS['url_sources'] ?? '/public/uploads/sources/') . basename($file['path'])); ?>"
-                               download="<?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?>">Download</a>)
-                        </span>
+                        <span>(<a href="<?php echo htmlspecialchars($file['path']); ?>" download="<?php echo htmlspecialchars($file['original_name'] ?? basename($file['path'])); ?>">Download</a>)</span>
                     <?php endif; ?>
                     <label>
                         <input type="checkbox" name="delete_source_files[]"
@@ -96,6 +89,6 @@ include __DIR__ . '/../partials/header.php';
 </form>
 </main>
 
-<script src="<?= $PATHS['url_root'] ?? '/' ?>public/js/project_edit_scrips.js"></script>
+<script src="/public/js/project_edit_scrips.js"></script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

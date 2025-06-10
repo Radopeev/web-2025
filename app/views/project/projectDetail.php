@@ -1,11 +1,7 @@
-<?php
-require_once __DIR__ . '/../../../config/global.php';
-global $PATHS;
-include __DIR__ . '/../partials/header.php';
-?>
+<?php include __DIR__ . '/../partials/header.php'; ?>
 
-<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/main_styles.css">
-<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/project_detail_styles.css">
+<link rel="stylesheet" href="/public/styles/main_styles.css">
+<link rel="stylesheet" href="/public/styles/project_detail_styles.css">
 
 <div class="project-detail-container">
     <header class="project-detail-header">
@@ -61,7 +57,6 @@ include __DIR__ . '/../partials/header.php';
                     $configViewableContent = $project['config_viewable_content'] ?? null;
                     $configContentElementId = 'config_content_' . htmlspecialchars($project['id']);
                     $configToggleLinkId = 'config_toggle_link_' . htmlspecialchars($project['id']);
-                    $configBasePath = $PATHS['url_configs'];
                     ?>
                     <span class="file-info-line">
                         <span class="file-name"><?php echo htmlspecialchars($displayConfigFileName); ?></span>
@@ -117,7 +112,6 @@ include __DIR__ . '/../partials/header.php';
 
                             $pathParts = explode('_', basename($filePath), 2);
                             $displayFileNameFromPath = (count($pathParts) > 1 && str_starts_with($pathParts[0], 'source')) ? $pathParts[1] : basename($filePath);
-                            $sourceBasePath = $PATHS['url_sources'];
                             ?>
                             <li class="file-list-item">
                             <span class="file-info-line">
@@ -194,6 +188,6 @@ include __DIR__ . '/../partials/header.php';
     </section>
 </div>
 
-<script src="<?= $PATHS['url_root'] ?? '/' ?>public/js/project_detail_scripts.js"></script>
+<script src="/public/js/project_detail_scripts.js"></script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

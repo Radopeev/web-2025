@@ -1,9 +1,7 @@
 <?php
 
 require_once APP_ROOT . 'app/models/Project.php';
-require_once APP_ROOT . 'config/global.php';
-global $PATHS;
-
+ 
 class LandingPageController {  
     public static function showLandingPage(): void
     {
@@ -18,4 +16,4 @@ class LandingPageController {
   
         require_once APP_ROOT . '/app/views/landingPage.php'; 
     }  
-}
+} 

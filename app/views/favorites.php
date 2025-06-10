@@ -1,10 +1,6 @@
-<?php
-require_once dirname(__DIR__, 2) . '/config/global.php';
-global $PATHS;
-include __DIR__ . '/partials/header.php';
-?>
+<?php include __DIR__ . '/partials/header.php'; ?>
 
-<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/favorites_page_styles.css">
+<link rel="stylesheet" href="/public/styles/favorites_page_styles.css">
 
 <main class="favorites-main">
     <h2>My Favorite Projects</h2>
