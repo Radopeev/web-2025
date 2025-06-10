@@ -1,12 +1,12 @@
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
-<link rel="stylesheet" href="/public/styles/main_styles.css">
-<link rel="stylesheet" href="/public/styles/project_detail_styles.css">
+<link rel="stylesheet" href="<?php echo BASE_PATH; ?>/public/styles/main_styles.css">
+<link rel="stylesheet" href="<?php echo BASE_PATH; ?>/public/styles/project_detail_styles.css">
 
 <div class="project-detail-container">
     <header class="project-detail-header">
         <div class="project-detail-header-bar">
-            <a href="/landingPage" class="back-link">&larr; Back to Projects</a>
+            <a href="<?php echo BASE_PATH; ?>/landingPage" class="back-link">&larr; Back to Projects</a>
             <?php if (isset($project) && $project): ?>
                 <h1 class="project-title">
                     Project: <span class="project-title-name"><?php echo htmlspecialchars($project['title']); ?></span>
@@ -14,7 +14,7 @@
                         <?php
                         $isFavorited = Project::isFavorited($_SESSION['user_id'], $project['id']);
                         ?>
-                        <form action="/project/<?php echo $isFavorited ? 'unstar' : 'star'; ?>" method="POST" style="display:inline;">
+                        <form action="<?php echo BASE_PATH; ?>/project/<?php echo $isFavorited ? 'unstar' : 'star'; ?>" method="POST" style="display:inline;">
                             <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
                             <button type="submit" class="star-btn" title="<?php echo $isFavorited ? 'Remove from favorites' : 'Add to favorites'; ?>" style="background:none;border:none;font-size:1.5rem;vertical-align:middle;cursor:pointer;color:#fbbf24;">
                                 <?php echo $isFavorited ? '★' : '☆'; ?>
@@ -38,7 +38,7 @@
                 <h2 class="section-title">
                     Project Information
                     <?php if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == $project['user_id']): ?>
-                        <a href="/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" class="edit-project-btn">Edit Project</a>
+                        <a href="<?php echo BASE_PATH; ?>/project/edit?id=<?php echo htmlspecialchars($project['id']); ?>" class="edit-project-btn">Edit Project</a>
                     <?php endif; ?>
                 </h2>
                 <p><strong>Description:</strong> <?php echo htmlspecialchars($project['description']); ?></p>
@@ -57,6 +57,7 @@
                     $configViewableContent = $project['config_viewable_content'] ?? null;
                     $configContentElementId = 'config_content_' . htmlspecialchars($project['id']);
                     $configToggleLinkId = 'config_toggle_link_' . htmlspecialchars($project['id']);
+                    $configBasePath = BASE_PATH . '/public/uploads/configs/';
                     ?>
                     <span class="file-info-line">
                         <span class="file-name"><?php echo htmlspecialchars($displayConfigFileName); ?></span>
@@ -94,8 +95,9 @@
                     <p>No files associated with this project.</p>
                 <?php else: ?>
                     <ul class="file-list">
-                        <?php foreach ($projectFiles as $file): ?>
-                            <?php
+                        <?php
+                        $sourceBasePath = BASE_PATH . '/public/uploads/sources/';
+                        foreach ($projectFiles as $file):
                             if (!is_array($file)) continue;
                             $fileNameToDisplay = $file['original_name'] ?? 'Unknown File';
                             $filePath = $file['file_path'] ?? '';
@@ -188,6 +190,6 @@
     </section>
 </div>
 
-<script src="/public/js/project_detail_scripts.js"></script>
+<script src="<?php echo BASE_PATH; ?>/public/js/project_detail_scripts.js"></script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

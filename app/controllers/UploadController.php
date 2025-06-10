@@ -1,5 +1,5 @@
 <?php
-require_once 'config/database.php';
+require_once APP_ROOT . '/config/database.php';
 
 class UploadController
 {
@@ -83,6 +83,8 @@ class UploadController
             }
         }
 
-        header("Location: /landingPage");
+        // Use BASE_PATH for redirect to support subfolder deployments
+        header("Location: " . (defined('BASE_PATH') ? BASE_PATH : '') . "/landingPage");
+        exit;
     }
 }

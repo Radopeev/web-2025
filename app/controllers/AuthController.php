@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../models/User.php';
 
+require_once APP_ROOT . '/app/models/User.php';
+ 
 session_start();
 
 class AuthController
@@ -10,14 +11,14 @@ class AuthController
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['logged_in'] = true;
-        header('Location: /landingPage');
+        header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/landingPage');
         exit;
     }
 
     public static function login()
     {
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-            header('Location: /landingPage');
+            header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/landingPage');
             exit;
         }
 
@@ -59,6 +60,7 @@ class AuthController
     public static function logout()
     {
         session_destroy();
-        header('Location: /login');
+        header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/login');
+        exit;
     }
 }

@@ -1,5 +1,6 @@
 <?php
-const APP_ROOT = __DIR__ . '/../';
+// const APP_ROOT = '../';
+// require_once APP_ROOT . 'config/app.php'; // <-- Add this
 
 require_once APP_ROOT . 'app/controllers/AuthController.php';
 require_once APP_ROOT . 'app/controllers/LandingPageController.php';
@@ -13,17 +14,22 @@ function require_auth()
         session_start();
     }
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        header('Location: /login');
+        header('Location: ' . BASE_PATH . '/login');
         exit;
     }
 }
 
-$path = __DIR__ . '/../' . $_SERVER['REQUEST_URI'];
-if (php_sapi_name() === 'cli-server' && is_file($path)) {
-    return false;
-}
-
+// Get request path
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Remove BASE_PATH from request for routing
+if (BASE_PATH && strpos($request, BASE_PATH) === 0) {
+    $request = substr($request, strlen(BASE_PATH));
+}
+if ($request === false || $request === '') $request = '/';
+
+// Normalize double slashes and trailing slashes
+$request = '/' . ltrim($request, '/');
 
 switch ($request) {
     case '/':
@@ -46,7 +52,7 @@ switch ($request) {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload->handleUpload();
-        } elseif ($_SERVER['REQUEST_URI'] === '/upload') {
+        } elseif ($request === '/upload') {
             require_once APP_ROOT . 'app/views/upload.php';
         }
         break;

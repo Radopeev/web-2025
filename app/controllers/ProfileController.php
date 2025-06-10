@@ -11,7 +11,7 @@ class ProfileController
         $user = User::findById($userId);
 
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/login');
             exit;
         }
 
@@ -27,14 +27,13 @@ class ProfileController
 
         $projects = Project::getAllProjectsForUser($userId);
 
-
         include APP_ROOT . 'app/views/profile.php';
     }
 
     public static function updateProfile()
     {
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
+            header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/login');
             exit;
         }
 
@@ -90,7 +89,7 @@ class ProfileController
             }
         }
 
-        header('Location: /profile');
+        header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/profile');
     }
 
     public static function deleteProject()
@@ -155,13 +154,13 @@ class ProfileController
             }
         }
 
-        header('Location: /profile');
+        header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/profile');
     }
 
     public static function uploadProfilePicture()
     {
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
+            header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/login');
             exit;
         }
 
@@ -200,7 +199,7 @@ class ProfileController
                     unlink($currentProfilePicture);
                 }
 
-                header('Location: /profile');
+                header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/profile');
                 exit;
             } else {
                 echo "Error uploading file.";

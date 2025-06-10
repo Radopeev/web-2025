@@ -1,9 +1,9 @@
 <?php include __DIR__ . '/partials/header.php'; ?>
 
-<link rel="stylesheet" href="/public/styles/upload_page_styles.css">
+<link rel="stylesheet" href="<?php echo BASE_PATH; ?>/public/styles/upload_page_styles.css">
 
 <main class="upload-main">
-    <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+    <form action="<?php echo BASE_PATH; ?>/upload" method="POST" enctype="multipart/form-data" class="upload-form">
         <h2>Upload New Project</h2>
 
         <label for="title">Project Title:</label>
@@ -30,6 +30,6 @@
     </form>
 </main>
 
-<script src="/public/js/upload_scripts.js"></script>
+<script src="<?php echo BASE_PATH; ?>/public/js/upload_scripts.js"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

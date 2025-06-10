@@ -11,8 +11,8 @@ if (!isset($username)) {
     <meta charset="UTF-8">
     <title>ProjectHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/styles/main_styles.css">
-    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
+    <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/public/styles/main_styles.css">
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_PATH; ?>/public/favicon.svg">
 </head>
 
 <body>
@@ -32,19 +32,19 @@ if (!isset($username)) {
             <?php endif; ?>
         </div>
         <nav>
-            <a href="/landingPage"
-                class="<?php echo ($_SERVER['REQUEST_URI'] === '/landingPage') ? 'active' : ''; ?>">Home</a>
+            <a href="<?php echo BASE_PATH; ?>/landingPage"
+                class="<?php echo ($_SERVER['REQUEST_URI'] === BASE_PATH . '/landingPage') ? 'active' : ''; ?>">Home</a>
             <?php if (!empty($username) && $username !== 'Guest'): ?>
-                <a href="/upload" class="<?php echo ($_SERVER['REQUEST_URI'] === '/upload') ? 'active' : ''; ?>">Upload
+                <a href="<?php echo BASE_PATH; ?>/upload" class="<?php echo ($_SERVER['REQUEST_URI'] === BASE_PATH . '/upload') ? 'active' : ''; ?>">Upload
                     Project</a>
-                <a href="/profile" class="<?php echo ($_SERVER['REQUEST_URI'] === '/profile') ? 'active' : ''; ?>">My
+                <a href="<?php echo BASE_PATH; ?>/profile" class="<?php echo ($_SERVER['REQUEST_URI'] === BASE_PATH . '/profile') ? 'active' : ''; ?>">My
                     Profile</a>
-                <a href="/favorites" class="<?php echo ($_SERVER['REQUEST_URI'] === '/favorites') ? 'active' : ''; ?>">Favorites</a>
-                <a href="/logout" style="margin-left:20px;">Logout</a>
+                <a href="<?php echo BASE_PATH; ?>/favorites" class="<?php echo ($_SERVER['REQUEST_URI'] === BASE_PATH . '/favorites') ? 'active' : ''; ?>">Favorites</a>
+                <a href="<?php echo BASE_PATH; ?>/logout" style="margin-left:20px;">Logout</a>
             <?php else: ?>
-                <a href="/login" class="<?php echo ($_SERVER['REQUEST_URI'] === '/login') ? 'active' : ''; ?>">Login</a>
-                <a href="/register"
-                    class="<?php echo ($_SERVER['REQUEST_URI'] === '/register') ? 'active' : ''; ?>">Register</a>
+                <a href="<?php echo BASE_PATH; ?>/login" class="<?php echo ($_SERVER['REQUEST_URI'] === BASE_PATH . '/login') ? 'active' : ''; ?>">Login</a>
+                <a href="<?php echo BASE_PATH; ?>/register"
+                    class="<?php echo ($_SERVER['REQUEST_URI'] === BASE_PATH . '/register') ? 'active' : ''; ?>">Register</a>
             <?php endif; ?>
         </nav>
     </header>

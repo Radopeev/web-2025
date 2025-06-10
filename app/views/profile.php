@@ -6,7 +6,7 @@ if (!isset($page)) $page = 1;
 if (!isset($totalPages)) $totalPages = 1;
 ?>
 
-<link rel="stylesheet" href="/public/styles/profile_page_styles.css">
+<link rel="stylesheet" href="<?php echo BASE_PATH; ?>/public/styles/profile_page_styles.css">
 
 <main class="profile-main">
     <section class="profile-section">
@@ -20,7 +20,7 @@ if (!isset($totalPages)) $totalPages = 1;
 
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
-            <form action="/update_profile" method="POST" enctype="multipart/form-data">
+            <form action="<?php echo BASE_PATH; ?>/update_profile" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
@@ -60,34 +60,38 @@ if (!isset($totalPages)) $totalPages = 1;
         $projectsToShow = array_slice($projects, $startIndex, $projectsPerPage);
         ?>
 
-        <ul class="projects-list">
-            <?php foreach ($projectsToShow as $project): ?>
-                <li class="project-item">
-                    <div>
-                        <a class="project-title" href="/project/details?id=<?php echo htmlspecialchars($project['id']); ?>">
-                            <?php echo htmlspecialchars($project['title']); ?>
-                        </a>
-                        <span class="project-desc"><?php echo htmlspecialchars($project['description']); ?></span>
-                    </div>
-                    <form action="/delete_project" method="POST" class="delete-form">
-                        <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
-                        <button type="submit" class="delete-btn">Delete</button>
-                    </form>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <?php if (empty($projects)): ?>
+            <p>You have no projects yet. <a href="<?php echo BASE_PATH; ?>/upload">Create your first project</a>.</p>
+        <?php else: ?>
+            <ul class="projects-list">
+                <?php foreach ($projectsToShow as $project): ?>
+                    <li class="project-item">
+                        <div>
+                            <a class="project-title" href="<?php echo BASE_PATH; ?>/project/details?id=<?php echo htmlspecialchars($project['id']); ?>">
+                                <?php echo htmlspecialchars($project['title']); ?>
+                            </a>
+                            <span class="project-desc"><?php echo htmlspecialchars($project['description']); ?></span>
+                        </div>
+                        <form action="<?php echo BASE_PATH; ?>/delete_project" method="POST" class="delete-form">
+                            <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['id']); ?>">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
 
-        <div class="pagination">
-            <?php if ($page > 1): ?>
-                <a href="/profile?page=<?php echo $page - 1; ?>" class="pagination-btn">Previous</a>
-            <?php endif; ?>
-            <?php if ($page < $totalPages): ?>
-                <a href="/profile?page=<?php echo $page + 1; ?>" class="pagination-btn">Next</a>
-            <?php endif; ?>
-        </div>
+            <div class="pagination">
+                <?php if ($page > 1): ?>
+                    <a href="<?php echo BASE_PATH; ?>/profile?page=<?php echo $page - 1; ?>" class="pagination-btn">Previous</a>
+                <?php endif; ?>
+                <?php if ($page < $totalPages): ?>
+                    <a href="<?php echo BASE_PATH; ?>/profile?page=<?php echo $page + 1; ?>" class="pagination-btn">Next</a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </section>
 </main>
 
-<script src="/public/js/profile_scripts.js"></script>
+<script src="<?php echo BASE_PATH; ?>/public/js/profile_scripts.js"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

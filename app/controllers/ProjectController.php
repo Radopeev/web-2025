@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../models/Project.php';
+require_once APP_ROOT . '/app/models/Project.php';
 
-defined('UPLOAD_CONFIGS_DIR') || define('UPLOAD_CONFIGS_DIR', realpath(__DIR__ . '/../../public/uploads/configs/'));
-defined('UPLOAD_SOURCES_DIR') || define('UPLOAD_SOURCES_DIR', realpath(__DIR__ . '/../../public/uploads/sources/'));
+defined('UPLOAD_CONFIGS_DIR') || define('UPLOAD_CONFIGS_DIR', realpath(APP_ROOT . '/public/uploads/configs/'));
+defined('UPLOAD_SOURCES_DIR') || define('UPLOAD_SOURCES_DIR', realpath(APP_ROOT . '/public/uploads/sources/'));
 defined('MAX_INLINE_FILE_SIZE') || define('MAX_INLINE_FILE_SIZE', 1024 * 500);
 
 class ProjectController
@@ -80,7 +80,7 @@ class ProjectController
         // Owner check: Only allow project owner to edit
         $project = Project::getById($projectId);
         if (!$project || !isset($_SESSION['user_id']) || $_SESSION['user_id'] != $project['user_id']) {
-            header('Location: /landingPage');
+            header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : '') . '/landingPage');
             exit;
         }
 
@@ -273,7 +273,7 @@ class ProjectController
             $conn->commit();
             self::setSuccessMessage("Project updated successfully!");
             self::logInfo("Project update SUCCESS for ID: " . $projectId);
-            header("Location: /project/details?id=" . $projectId . "&success=1");
+            header("Location: " . (defined('BASE_PATH') ? BASE_PATH : '') . "/project/details?id=" . $projectId . "&success=1");
             exit();
 
         } catch (Exception $e) {

@@ -1,2 +1,7 @@
 <?php
-require_once __DIR__ . '/routes/web.php';
+
+const APP_ROOT = './';
+
+require_once APP_ROOT . 'config/constants.php';
+
+require_once 'routes/web.php';
