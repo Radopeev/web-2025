@@ -2,6 +2,10 @@
 
 ## run project
 
+> [!IMPORTANT]
+> If you wish to run the project from another folder, make sure to update the `BASE_PATH` constant in the `config/constants.php`
+> 
+
 ### manually
 1. Have php installed.
    - on Windows: https://www.geeksforgeeks.org/how-to-install-php-in-windows-10/
