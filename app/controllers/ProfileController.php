@@ -2,6 +2,8 @@
 
 require_once APP_ROOT . 'app/models/User.php';
 require_once APP_ROOT . 'app/models/Project.php';
+require_once APP_ROOT . 'config/global.php';
+global $PATHS;
 
 class ProfileController
 {
@@ -27,12 +29,12 @@ class ProfileController
 
         $projects = Project::getAllProjectsForUser($userId);
 
-
         include APP_ROOT . 'app/views/profile.php';
     }
 
     public static function updateProfile()
     {
+        global $PATHS;
         if (!isset($_SESSION['user_id'])) {
             header('Location: /login');
             exit;
@@ -61,7 +63,7 @@ class ProfileController
             $_SESSION['username'] = $username;
         }
         if (!empty($_FILES['profile_picture']['tmp_name'])) {
-            $targetDir = 'public/uploads/profile_pictures/';
+            $targetDir = $PATHS['upload_profile_pictures_dir'];
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }
@@ -74,7 +76,6 @@ class ProfileController
             $result = $stmt->get_result();
             $currentProfilePicture = $result->fetch_assoc()['profile_picture'];
             $stmt->close();
-
 
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
@@ -160,6 +161,7 @@ class ProfileController
 
     public static function uploadProfilePicture()
     {
+        global $PATHS;
         if (!isset($_SESSION['user_id'])) {
             header('Location: /login');
             exit;
@@ -168,7 +170,7 @@ class ProfileController
         $userId = $_SESSION['user_id'];
 
         if (!empty($_FILES['profile_picture']['tmp_name'])) {
-            $targetDir = 'public/uploads/profile_pictures/';
+            $targetDir = $PATHS['upload_profile_pictures_dir'];
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }

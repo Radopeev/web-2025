@@ -1,6 +1,10 @@
-<?php include __DIR__ . '/../partials/header.php'; ?>
+<?php
+require_once dirname(__DIR__, 3) . '/config/global.php';
+global $PATHS;
+include __DIR__ . '/../partials/header.php';
+?>
 
-<link rel="stylesheet" href="/public/styles/auth_styles.css">
+<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/auth_styles.css">
 
 <div class="auth-container">
     <h2>Login</h2>

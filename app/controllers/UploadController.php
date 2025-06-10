@@ -1,11 +1,12 @@
 <?php
 require_once 'config/database.php';
+$PATHS = require __DIR__ . '/../../config/paths.php';
 
 class UploadController
 {
     public static function handleUpload()
     {
-        global $conn;
+        global $conn, $PATHS;
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -15,11 +16,19 @@ class UploadController
         $title = $_POST['title'];
         $description = $_POST['description'];
 
+        // Ensure upload directories exist
+        if (!is_dir($PATHS['upload_configs_dir'])) {
+            mkdir($PATHS['upload_configs_dir'], 0777, true);
+        }
+        if (!is_dir($PATHS['upload_sources_dir'])) {
+            mkdir($PATHS['upload_sources_dir'], 0777, true);
+        }
+
         $configPath = '';
         if (!empty($_FILES['config_file']['tmp_name'])) {
             $originalConfigName = basename($_FILES['config_file']['name']);
             $uniqueConfigName = uniqid() . '_' . $originalConfigName;
-            $configPath = 'public/uploads/configs/' . $uniqueConfigName;
+            $configPath = $PATHS['upload_configs_dir'] . $uniqueConfigName;
             move_uploaded_file($_FILES['config_file']['tmp_name'], $configPath);
         }
 
@@ -33,7 +42,7 @@ class UploadController
             if ($tmpName) {
                 $originalName = basename($_FILES['source_files']['name'][$index]);
                 $uniqueName = uniqid() . '_' . $originalName;
-                $filePath = 'public/uploads/sources/' . $uniqueName;
+                $filePath = $PATHS['upload_sources_dir'] . $uniqueName;
                 move_uploaded_file($tmpName, $filePath);
 
                 $dbFilePath = $filePath;
@@ -46,12 +55,11 @@ class UploadController
         }
 
         if (!empty($_FILES['directory_files']['tmp_name'])) {
-            $uploadDir = 'public/uploads/sources/';
             foreach ($_FILES['directory_files']['tmp_name'] as $index => $tmpName) {
                 if ($tmpName) {
                     $originalName = basename($_FILES['directory_files']['name'][$index]);
                     $uniqueName = uniqid() . '_' . $originalName;
-                    $destinationPath = $uploadDir . $uniqueName;
+                    $destinationPath = $PATHS['upload_sources_dir'] . $uniqueName;
                     move_uploaded_file($tmpName, $destinationPath);
 
                     $dbDestinationPath = $destinationPath;

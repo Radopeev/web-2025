@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../../config/global.php';
+global $PATHS;
 if (!isset($username)) {
     $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest';
 }
@@ -11,8 +13,8 @@ if (!isset($username)) {
     <meta charset="UTF-8">
     <title>ProjectHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/styles/main_styles.css">
-    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
+    <link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/main_styles.css">
+    <link rel="icon" type="image/svg+xml" href="<?= $PATHS['url_root'] ?? '/' ?>public/favicon.svg">
 </head>
 
 <body>
@@ -25,8 +27,8 @@ if (!isset($username)) {
                 error_log(print_r($user, true));
                 if (!empty($user['profile_picture'])): ?>
                     <div class="profile-pic-container">
-                        <img src="/<?php echo htmlspecialchars($user['profile_picture']);?>" alt="Profile Picture">
-                        <span style="color: #e0e7ff; font-weight: 500;"><?php echo htmlspecialchars($username);error_log($username) ?></span>
+                        <img src="<?= $PATHS['url_profile_pictures'] . htmlspecialchars(basename($user['profile_picture'])) ?>" alt="Profile Picture">
+                        <span style="color: #e0e7ff; font-weight: 500;"><?php echo htmlspecialchars($username); error_log($username) ?></span>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

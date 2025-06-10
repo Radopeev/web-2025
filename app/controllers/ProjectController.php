@@ -1,10 +1,10 @@
 <?php
 
 require_once __DIR__ . '/../models/Project.php';
+require_once __DIR__ . '/../../config/global.php';
+global $PATHS;
 
-defined('UPLOAD_CONFIGS_DIR') || define('UPLOAD_CONFIGS_DIR', realpath(__DIR__ . '/../../public/uploads/configs/'));
-defined('UPLOAD_SOURCES_DIR') || define('UPLOAD_SOURCES_DIR', realpath(__DIR__ . '/../../public/uploads/sources/'));
-defined('MAX_INLINE_FILE_SIZE') || define('MAX_INLINE_FILE_SIZE', 1024 * 500);
+define('MAX_INLINE_FILE_SIZE', 1024 * 500);
 
 class ProjectController
 {
@@ -138,12 +138,13 @@ class ProjectController
 
     private static function validateUploadDirectories(): bool
     {
-        if (!UPLOAD_CONFIGS_DIR || !is_dir(UPLOAD_CONFIGS_DIR)) {
-            error_log("Error: Configuration upload path is invalid or not a directory: " . UPLOAD_CONFIGS_DIR);
+        global $PATHS;
+        if (!$PATHS['upload_configs_dir'] || !is_dir($PATHS['upload_configs_dir'])) {
+            error_log("Error: Configuration upload path is invalid or not a directory: " . $PATHS['upload_configs_dir']);
             return false;
         }
-        if (!UPLOAD_SOURCES_DIR || !is_dir(UPLOAD_SOURCES_DIR)) {
-            error_log("Error: Source file upload path is invalid or not a directory: " . UPLOAD_SOURCES_DIR);
+        if (!$PATHS['upload_sources_dir'] || !is_dir($PATHS['upload_sources_dir'])) {
+            error_log("Error: Source file upload path is invalid or not a directory: " . $PATHS['upload_sources_dir']);
             return false;
         }
         return true;
@@ -195,7 +196,7 @@ class ProjectController
         $processedFile['viewable_content'] = null;
 
         $fileNameOnDisk = basename($processedFile[$fileNameKey] ?? '');
-        $fullFilePath = $uploadAbsPath . DIRECTORY_SEPARATOR . $fileNameOnDisk;
+        $fullFilePath = rtrim($uploadAbsPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $fileNameOnDisk;
         $resolvedFullPath = realpath($fullFilePath);
 
         if ($resolvedFullPath && str_starts_with($resolvedFullPath, $uploadAbsPath) && file_exists($resolvedFullPath) && is_readable($resolvedFullPath)) {
@@ -226,18 +227,20 @@ class ProjectController
 
     private static function processProjectSourceFiles(int $projectId): array
     {
+        global $PATHS;
         $processedFiles = [];
         $rawProjectFiles = Project::getProjectSourceFiles($projectId);
         foreach ($rawProjectFiles as $file) {
-            $processedFiles[] = self::processFileForInlineDisplay($file, UPLOAD_SOURCES_DIR, 'file_path', false);
+            $processedFiles[] = self::processFileForInlineDisplay($file, $PATHS['upload_sources_dir'], 'file_path', false);
         }
         return $processedFiles;
     }
 
     private static function processProjectConfigFile(array $project): array
     {
+        global $PATHS;
         $processedConfig = self::processFileForInlineDisplay(
-            $project, UPLOAD_CONFIGS_DIR, 'config_file', true
+            $project, $PATHS['upload_configs_dir'], 'config_file', true
         );
         $project['config_is_viewable_inline'] = $processedConfig['is_viewable_inline'];
         $project['config_view_type'] = $processedConfig['view_type'];
@@ -340,6 +343,7 @@ class ProjectController
 
     private static function handleConfigFile(int $projectId): void
     {
+        global $PATHS;
         $projectCurrentState = Project::getById($projectId);
         $oldConfigFile = $projectCurrentState['config_file'] ?? null;
         self::logInfo("Old config file path: " . ($oldConfigFile ?? 'None'));
@@ -357,10 +361,10 @@ class ProjectController
             self::logInfo("New config file detected for upload.");
             $originalFileName = basename($_FILES['config_file']['name']);
             $uniqueFileName = uniqid('config_') . '_' . $originalFileName;
-            $targetDir = UPLOAD_CONFIGS_DIR;
+            $targetDir = $PATHS['upload_configs_dir'];
             if (!is_dir($targetDir)) { mkdir($targetDir, 0755, true); }
             $newConfigFilePath = 'public/uploads/configs/' . $uniqueFileName;
-            $fullNewConfigFilePath = APP_ROOT . '/' . $newConfigFilePath;
+            $fullNewConfigFilePath = $targetDir . $uniqueFileName;
 
             if (move_uploaded_file($_FILES['config_file']['tmp_name'], $fullNewConfigFilePath)) {
                 self::logInfo("New config file moved successfully to: " . $fullNewConfigFilePath);
@@ -379,6 +383,7 @@ class ProjectController
 
     private static function handleSourceFiles(int $projectId): void
     {
+        global $PATHS;
         $deleteSourceFiles = $_POST['delete_source_files'] ?? [];
         if (!empty($deleteSourceFiles)) {
             self::logInfo("Source files marked for deletion: " . implode(', ', $deleteSourceFiles));
@@ -393,7 +398,7 @@ class ProjectController
 
         if (!empty($_FILES['new_source_files']['tmp_name'][0])) {
             self::logInfo("New source files detected for upload.");
-            $targetDir = UPLOAD_SOURCES_DIR;
+            $targetDir = $PATHS['upload_sources_dir'];
             if (!is_dir($targetDir)) { mkdir($targetDir, 0755, true); }
 
             foreach ($_FILES['new_source_files']['tmp_name'] as $index => $tmpName) {
@@ -401,7 +406,7 @@ class ProjectController
                     $originalName = basename($_FILES['new_source_files']['name'][$index]);
                     $uniqueName = uniqid('source_') . '_' . $originalName;
                     $newSourceFilePath = 'public/uploads/sources/' . $uniqueName;
-                    $fullNewSourceFilePath = APP_ROOT . '/' . $newSourceFilePath;
+                    $fullNewSourceFilePath = $targetDir . $uniqueName;
 
                     if (move_uploaded_file($tmpName, $fullNewSourceFilePath)) {
                         self::logInfo("New source file '{$originalName}' moved to: " . $fullNewSourceFilePath);
@@ -472,14 +477,15 @@ class ProjectController
 
     private static function renderDetailView(): void
     {
+        global $PATHS;
         $project = self::$project;
         $projectFiles = self::$projectFiles;
         $projectInstruments = self::$projectInstruments;
         $errorMessage = self::$errorMessage;
         $successMessage = self::$successMessage;
 
-        $configBasePath = '/public/uploads/configs/';
-        $sourceBasePath = '/public/uploads/sources/';
+        $configBasePath = $PATHS['url_configs'];
+        $sourceBasePath = $PATHS['url_sources'];
 
         require_once APP_ROOT . '/app/views/project/projectDetail.php';
     }

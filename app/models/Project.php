@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../../config/global.php';
+global $PATHS;
+
 class Project {
     public static function getAllProjects(): array {
         global $conn;
@@ -365,9 +368,34 @@ class Project {
         }
     }
 
+    public static function addSourceFile(int $projectId, string $fileName, string $filePath): bool
+    {
+        global $conn;
+
+        if (!$conn instanceof mysqli) {
+            throw new Exception("Database connection not available.");
+        }
+
+        $sql = "INSERT INTO files (project_id, original_name, file_path) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("iss", $projectId, $fileName, $filePath);
+
+        if ($stmt->execute()) {
+            return $stmt->affected_rows > 0;
+        } else {
+            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
+        }
+    }
+
     public static function getSourceFilePathsByIds(array $fileIds): array
     {
         global $conn;
+        global $PATHS;
 
         if (!$conn instanceof mysqli) {
             error_log("MySQLi connection not available in Project::getSourceFilePathsByIds.");
@@ -412,30 +440,6 @@ class Project {
             if (isset($stmt) && $stmt) {
                 $stmt->close();
             }
-        }
-    }
-
-    public static function addSourceFile(int $projectId, string $fileName, string $filePath): bool
-    {
-        global $conn;
-
-        if (!$conn instanceof mysqli) {
-            throw new Exception("Database connection not available.");
-        }
-
-        $sql = "INSERT INTO files (project_id, original_name, file_path) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt === false) {
-            throw new mysqli_sql_exception("Failed to prepare statement: " . $conn->error);
-        }
-
-        $stmt->bind_param("iss", $projectId, $fileName, $filePath);
-
-        if ($stmt->execute()) {
-            return $stmt->affected_rows > 0;
-        } else {
-            throw new mysqli_sql_exception("Failed to execute statement: " . $stmt->error);
         }
     }
 

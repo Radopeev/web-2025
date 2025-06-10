@@ -1,4 +1,8 @@
-<?php include __DIR__ . '/partials/header.php'; ?>
+<?php
+require_once dirname(__DIR__, 2) . '/config/global.php';
+global $PATHS;
+include __DIR__ . '/partials/header.php';
+?>
 
 <?php
 if (!isset($projects)) $projects = [];
@@ -6,7 +10,7 @@ if (!isset($page)) $page = 1;
 if (!isset($totalPages)) $totalPages = 1;
 ?>
 
-<link rel="stylesheet" href="/public/styles/profile_page_styles.css">
+<link rel="stylesheet" href="<?= $PATHS['url_root'] ?? '/' ?>public/styles/profile_page_styles.css">
 
 <main class="profile-main">
     <section class="profile-section">
@@ -88,6 +92,6 @@ if (!isset($totalPages)) $totalPages = 1;
     </section>
 </main>
 
-<script src="/public/js/profile_scripts.js"></script>
+<script src="<?= $PATHS['url_root'] ?? '/' ?>public/js/profile_scripts.js"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

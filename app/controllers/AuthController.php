@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../../config/global.php';
+global $PATHS;
 
 session_start();
 
