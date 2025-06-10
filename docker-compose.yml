@@ -1,4 +1,24 @@
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  php:
+    build: .
+    volumes:
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: project_manager
+
   db:
     image: mysql:8.0
     restart: always
@@ -11,21 +31,6 @@ services:
       - db_data:/var/lib/mysql
       - ./sql_script.txt:/docker-entrypoint-initdb.d/01_schema.sql:ro
       - ./sql_data.txt:/docker-entrypoint-initdb.d/02_data.sql:ro
-
-  php:
-    build: .
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: project_manager
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/var/www/html
-      - ./public/uploads:/var/www/html/public/uploads
 
 volumes:
   db_data:
