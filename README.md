@@ -43,7 +43,7 @@
 
    - There is no need to change the default configuration if you do not need to.
 
-3. Copy the entire project into `xampp/htdocs` folder.
+3. Copy the entire project into the `xampp/htdocs/` folder (in the XAMPP configuration).
 
 4. Run the `sql_script.txt` to initialize the databases in the `http://localhost/phpmyadmin/` (and `sql_data.txt` for initial data).
 
