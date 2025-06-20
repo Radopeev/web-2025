@@ -1,5 +1,5 @@
 <?php
-$host = getenv('DB_HOST') ?: 'localhost:3307';
+$host = getenv('DB_HOST') ?: 'localhost:3306';
 $user = getenv('DB_USER') ?: 'root';
 $password = getenv('DB_PASSWORD') ?: '';
 $dbname = getenv('DB_NAME') ?: 'project_manager';
