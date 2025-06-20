@@ -18,6 +18,8 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: project_manager
+    command: >
+      sh -c "mkdir -p public/uploads/configs public/uploads/sources && chmod -R 777 public/uploads && php-fpm"
 
   db:
     image: mysql:8.0
