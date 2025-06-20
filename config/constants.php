@@ -3,4 +3,4 @@
 
 define('BASE_PATH', '');
 
-// define('BASE_PATH', '/web-2025'); // example usage
+// define('BASE_PATH', '/web-2025'); // example usage   
