@@ -51,5 +51,5 @@
 > If you wish to run the app in subfolder (not from app root) make sure to match the subfloder in the `BASE_PATH` constant in the `config/constants.php`.
 
 > Common issues:
-> 1. Database port amiguity. If you are experiencing DB setup problems, try to change the port (from the default 3306) in the `my.ini` file (all `port=3306` flags) of the MySQL and `config.inc.php` file (add `$cfg['Servers'][$i]['port'] = '3307';` for the Apache. Note that you should change the `host` in the `database.php` file in the app to `localhost:<custom_port>`.
+> 1. Database port amiguity. If you are experiencing DB setup problems, try to change the port (from the default 3306) in the `my.ini` file (all `port=3306` flags) of the MySQL and `config.inc.php` file (add `$cfg['Servers'][$i]['port'] = '<custom_port>';` for the Apache. Note that you should change the `host` in the `database.php` file in the app to `localhost:<custom_port>`.
 
